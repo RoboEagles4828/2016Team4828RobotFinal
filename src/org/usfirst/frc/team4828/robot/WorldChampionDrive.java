@@ -1,10 +1,7 @@
 package org.usfirst.frc.team4828.robot;
 
-import edu.wpi.first.wpilibj.CANTalon;
-
-import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.GenericHID;
 
 public class WorldChampionDrive {
@@ -15,6 +12,8 @@ public class WorldChampionDrive {
 	public enum Rotation {
 		LEFT90, RIGHT90;
 	}
+	
+	public boolean inverseControls = false;
 
 	public CANTalon frontLeft;
 	public CANTalon rearLeft;
@@ -22,12 +21,16 @@ public class WorldChampionDrive {
 	public CANTalon rearRight;
 
 	protected static final int kMaxNumberOfMotors = 4;
-
+	
 	public WorldChampionDrive(int flport, int rlport, int frport, int rrport) {
 		frontLeft = new CANTalon(flport);
 		rearLeft = new CANTalon(rlport);
 		frontRight = new CANTalon(frport);
 		rearRight = new CANTalon(rrport);
+	}
+	
+	public double getRLEnc(){
+		return rearLeft.getEncPosition();
 	}
 
 	// public void printEncOutput() {
@@ -142,6 +145,11 @@ public class WorldChampionDrive {
 		double rightMotorSpeed;
 		moveValue = limit(moveValue);
 		rotateValue = limit(rotateValue);
+		
+		if(inverseControls){
+			moveValue = -moveValue;
+		}
+		
 		if (squaredInputs) {
 			if (moveValue >= 0.0) {
 				moveValue = (moveValue * moveValue);
@@ -202,34 +210,34 @@ public class WorldChampionDrive {
 		stop();
 	}
 
-	public void driveRotations(int rotations, double speed) {
-		int encStart = rearLeft.getEncPosition();
-		double encIncNeeded = rotations * 1440;
-		while (rearLeft.getEncPosition() < encStart + encIncNeeded
-				&& rearLeft.getEncPosition() > encStart - encIncNeeded) {
-			move(Direction.FORWARD, speed);
-			System.out.println(rearLeft.getEncPosition());
-		}
-		stop();
-	}
-
-	// encoders = 1440 per rotation
-	private final static double PULSE_PER_90 = 1.0D;
-
-	public void rotate(Rotation rotation, double speed) {
-		int encStart = rearLeft.getEncPosition();
-		double encIncNeeded = PULSE_PER_90;
-		if (rotation == Rotation.LEFT90) {
-			while (frontRight.getEncPosition() < encStart + encIncNeeded)
-				move(Direction.SPINLEFT, speed);
-			stop();
-		} else if (rotation == Rotation.RIGHT90) {
-			while (rearLeft.getEncPosition() < encStart + encIncNeeded)
-				move(Direction.SPINRIGHT, speed);
-			stop();
-		}
-	}
-
+//	public void driveRotations(int rotations, double speed) {
+//		int encStart = rearLeft.getEncPosition();
+//		double encIncNeeded = rotations * 1440;
+//		while (rearLeft.getEncPosition() < encStart + encIncNeeded
+//				&& rearLeft.getEncPosition() > encStart - encIncNeeded) {
+//			move(Direction.FORWARD, speed);
+//			System.out.println(rearLeft.getEncPosition());
+//		}
+//		stop();
+//	}
+//
+//	// encoders = 1440 per rotation
+//	private final static double PULSE_PER_90 = 1.0D;
+//
+//	public void rotate(Rotation rotation, double speed) {
+//		int encStart = rearLeft.getEncPosition();
+//		double encIncNeeded = PULSE_PER_90;
+//		if (rotation == Rotation.LEFT90) {
+//			while (frontRight.getEncPosition() < encStart + encIncNeeded)
+//				move(Direction.SPINLEFT, speed);
+//			stop();
+//		} else if (rotation == Rotation.RIGHT90) {
+//			while (rearLeft.getEncPosition() < encStart + encIncNeeded)
+//				move(Direction.SPINRIGHT, speed);
+//			stop();
+//		}
+//	}
+//
 	private final static double FUDGE_FACTOR = 288;
 	private final static double PULSE_PER_INCH = 45.830D;
 
@@ -245,14 +253,21 @@ public class WorldChampionDrive {
 			stop();
 		}
 	}
+	
+	public void autoHack(){
+		frontLeft.set(0.55);
+		frontRight.set(-0.55);
+		rearLeft.set(0.55);
+		rearRight.set(-0.55);
+	}
 
 	public void move(Direction direction, double speed) {
-		if (direction == Direction.FORWARD) {
+		if (direction == Direction.BACKWARD) {
 			frontLeft.set(-speed);
-			frontRight.set(speed);
+			frontRight.set(-speed);
 			rearLeft.set(-speed);
-			rearRight.set(speed);
-		} else if (direction == Direction.BACKWARD) {
+			rearRight.set(-speed);
+		} else if (direction == Direction.FORWARD) {
 			frontLeft.set(speed);
 			frontRight.set(-speed);
 			rearLeft.set(speed);
