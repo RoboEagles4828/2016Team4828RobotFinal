@@ -6,7 +6,7 @@ public class ButtonMappings {
 	}
 	
 	//shared between joysticks
-	public static final int shooterMoveToHeight = 2;
+	
 	
 	public static final int loaderUp = 12;
 	public static final int loaderDown = 11;
@@ -22,10 +22,11 @@ public class ButtonMappings {
 	public static final int shooterShoot = 1; //shoots; 1 = trigger
 	public static final int inverseControls = 4;
 	public static final int undoInverseControls = 6;
+	public static final int shooterMoveToHeight = 2;
 	
 	//exclusive to second joystick
 	public static final int aimCamera = 1; //hold to aim cam; 1 = trigger
-	public static final int enableAutoAim = 4;
-	public static final int disableAutoAim = 6;
-	public static final int loaderIntakeOut = 2;
+	//4 and 6 are free
+	public static final int loaderMoveToLoad = 4;
+	public static final int shooterMoveToLoad = 2;
 }

@@ -2,7 +2,7 @@ package org.usfirst.frc.team4828.robot;
 
 public class Ports {
 	private Ports(){
-		throw new AssertionError("Warning: Boom Bots may explode!\n(Assertion Error 'cause you instantiated class Ports.");
+		throw new AssertionError("You have awakened me too soon, Executus!\n(Assertion Error 'cause you instantiated class Ports.\nWhat part of private don't you understand, Nikhil...\nSigh.\n");
 	}
 	
 	public static final int driveStick = 0;

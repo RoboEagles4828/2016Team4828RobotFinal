@@ -3,7 +3,6 @@ package org.usfirst.frc.team4828.robot;
 import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
@@ -95,111 +94,89 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousPeriodic() {
 		AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
+		AutoPosition position = (AutoPosition) obstacleChooser.getSelected();
 		
-		if (!hasRun && isAutonomous()) {
-			rd.move(Direction.FORWARD, 0.25, 12);
-			if(obstacle == AutoObstacle.LOW_BAR){
-				loader.reset();
-				shooter.reset();
-			}
-			rd.autoHack();
-			Timer.delay(2.8);
-			rd.stop();
-			hasRun = true;
+		switch(position){
+		case ONE:
+			//setup robot with back edge of robot on auto line
+			rd.move(Direction.FORWARD, .25, 18, this);
+			loader.reset(this);
+			shooter.reset(this);
+			rd.move(Direction.FORWARD,.25, 18, this); //move from auto line to defense
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 foot + robot length past it for buffer
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 81.85, this); //drive forward and place midpoint of robot on turn point
+			rd.rotateToAngle(240, gyro); //rotate 60 degrees clockwise +  180 to turn robot around backward, back now points at goal
+			camera.enableAutoAim();
+			//robot is now 136.31 inches from goal (14 ft 9.93 inches)
+			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
+			Timer.delay(2);
+			shooter.shoot();
+			break;
+		case TWO:
+			//setup robot with back edge of robot on auto line
+			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 110.71, this); //drive forward to turn point
+			rd.rotateToAngle(240, gyro); //rotate 60 degrees clockwise from forward to point at goal
+			camera.enableAutoAim();
+			//robot is now 78.57 inches from goal
+			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
+			Timer.delay(2);
+	    	shooter.shoot();
+			break;
+		case THREE:
+			//setup robot with back edge of robot on auto line
+			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 27.75, this); //drive forward to turn point 1
+			rd.rotateToAngle(90, gyro); //rotate 90 degrees clockwise
+			rd.move(Direction.FORWARD,.25, 40, this); //drive forward to turn point 2
+			rd.rotateToAngle(180, gyro); //point back end at goal
+			camera.enableAutoAim();
+			//robot is now 108.75 inches from goal
+			// rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
+			Timer.delay(2);
+			shooter.shoot();
+			break;
+		case FOUR:
+			//setup robot with back edge of robot on auto line
+			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 27.75, this); //drive forward to turn point 1
+			//rd.rotateToAngle(-90, gyro); //rotate 90 degrees clockwise
+			//rd.move(Direction.FORWARD,.25, 8); //drive forward to turn point 2
+			rd.rotateToAngle(180, gyro); //point back end at goal
+			camera.enableAutoAim();
+			//robot is now 108.75 inches from goal
+			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
+			Timer.delay(2);
+			shooter.shoot();
+			break;
+		case FIVE:
+			//setup robot with back edge of robot on auto line
+			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
+			rd.rotateToAngle(0, gyro); //reorient
+			rd.move(Direction.FORWARD,.25, 27.75, this); //drive forward to turn point 1
+			rd.rotateToAngle(-90, gyro); //rotate 90 degrees clockwise
+			rd.move(Direction.FORWARD,.25, 63, this); //drive forward to turn point 2
+			rd.rotateToAngle(180, gyro); //point back end at goal
+			camera.enableAutoAim();
+			//robot is now 108.75 inches from goal
+			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
+			Timer.delay(2);
+			shooter.shoot();
+			break;
 		}
-		// AutoPosition position = (AutoPosition) positionChooser.getSelected();
-		
-		// System.out.println(position.toString());
-		// System.out.println(obstacle.toString());
-		//
-		// if (!hasRun) {
-		// rd.move(Direction.FORWARD, 0.25, 12);
-		// loader.reset();
-		// shooter.reset();
-		// rd.autoHack();
-		// //rd.move(Direction.FORWARD, 0.4 , 24);
-		// // defeat the obstacle
-		// switch (obstacle) {
-		// case CHEVAL_DE_FRISE:
-		// break;
-		// case DRAWBRIDGE:
-		// break;
-		// case LOW_BAR:
-		// //rd.move(Direction.FORWARD, 0.2 , 90 );
-		// break;
-		// case MOAT:
-		// break;
-		// case PORTCULLIS:
-		// break;
-		// case RAMPARTS:
-		// break;
-		// case ROCK_WALL:
-		// break;
-		// case ROUGH_TERRAIN:
-		// break;
-		// case SALLYPORT:
-		// break;
-		// default:
-		// System.out.println("Something went wrong in autonomous Error: 1");
-		// break;
-		// }
-		// //rd.stop();
-		// //rd.rotateToAngle(0, gyro);
-		// // Move based on the obstacle position
-		// switch (position) {
-		// case ONE:
-		// //rd.move(Direction.FORWARD, .25, 100);
-		// //rd.move(Direction.FORWARD, .25, 106.85); // originally 160.85
-		// //rd.rotateToAngle(60, gyro); //original 60, rotated for shooting
-		// //shooter.setPosition(50000); //tentative rotation rating
-		// //camera.enableAutoAim();
-		// //rd.move(Direction.FORWARD, .25, 59);
-		// //Timer.delay(2);
-		// //shooter.shoot();
-		// break;
-		// case TWO:
-		// rd.move(Direction.FORWARD, .25, 100);
-		// rd.rotateToAngle(0, gyro);
-		// rd.move(Direction.FORWARD, .25, 189.714);
-		// rd.rotateToAngle(60, gyro);
-		// camera.enableAutoAim();
-		// rd.move(Direction.FORWARD, .25, 59);
-		// Timer.delay(2);
-		// shooter.shoot();
-		// break;
-		// case THREE:
-		// rd.move(Direction.FORWARD, .25, 100);
-		// rd.rotateToAngle(0, gyro);
-		// rd.rotateToAngle(27.65, gyro);
-		// rd.move(Direction.FORWARD, .25, 100.60);
-		// rd.rotateToAngle(0, gyro);
-		// camera.enableAutoAim();
-		// Timer.delay(2);
-		// shooter.shoot();
-		// break;
-		// case FOUR:
-		// rd.move(Direction.FORWARD, .25, 100);
-		// rd.rotateToAngle(0, gyro);
-		// camera.enableAutoAim();
-		// rd.move(Direction.FORWARD, .25, 94.5);
-		// Timer.delay(2);
-		// shooter.shoot();
-		// case FIVE:
-		// rd.move(Direction.FORWARD, .25, 100);
-		// rd.rotateToAngle(0, gyro);
-		// rd.move(Direction.FORWARD, .25, 183.074);
-		// rd.rotateToAngle(-60, gyro);
-		// camera.enableAutoAim();
-		// rd.move(Direction.FORWARD, .25, 14.844);
-		// Timer.delay(2);
-		// shooter.shoot();
-		// break;
-		// default:
-		// System.out.println("Something went wrong in autonomous Error: 2");
-		// break;
-		// }
-		// hasRun = true; // so auto doesn't repeat
-		// }
 		System.out.println("finish auto");
 	}
 
@@ -217,7 +194,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Shooter UpDown Motor Enc: ", shooter.getUpDownEncPosition());
 		SmartDashboard.putNumber("shooter LeftRight Enc: ", shooter.getLeftRightEncPosition());
 		SmartDashboard.putNumber("Loader upDownMotor Enc: ", loader.getEncPosition());
-		SmartDashboard.putNumber("Drive RL Enc: ", rd.getRLEnc());
+		//SmartDashboard.putNumber("Drive RL Enc: ", rd.getRLEnc());
 		SmartDashboard.putBoolean("Loader limit down: ", loader.getLimitDown());
 		SmartDashboard.putBoolean("Inverse Controls: ", rd.inverseControls);
 
@@ -248,8 +225,8 @@ public class Robot extends IterativeRobot {
 		else
 			shooter.rotateStop();
 
-		if (driveStick.getRawButton(ButtonMappings.shooterFlipUp)
-				|| driveStick2.getRawButton(ButtonMappings.shooterFlipUp) ) {
+		if ((driveStick.getRawButton(ButtonMappings.shooterFlipUp)
+				|| driveStick2.getRawButton(ButtonMappings.shooterFlipUp)) && shooter.getUpDownEncPosition() < -6000 ) {
 			checkShooter = true;
 			shooter.flipUp();
 		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDown)
@@ -274,8 +251,32 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
-			shooter.setPosition(-43500);
+			if(shooter.getUpDownEncPosition() > -42500)
+				shooter.flipEnc(-9000);
+			else if (shooter.getUpDownEncPosition() < -45500)
+				shooter.flipEnc(9000);
+			else 
+				shooter.flipStop();
 		}
+		
+		if(driveStick2.getRawButton(ButtonMappings.shooterMoveToLoad)){
+			if(shooter.getUpDownEncPosition() > -236000)
+				shooter.flipEnc(-9000);
+			else if(shooter.getUpDownEncPosition() < -244000)
+				shooter.flipEnc(9000);
+			else
+				shooter.flipStop();
+		}
+		
+		if(driveStick2.getRawButton(ButtonMappings.loaderMoveToLoad)){
+			if(loader.getEncPosition() > -2900)
+				loader.flipDown();
+			else if (loader.getEncPosition() < -3200)
+				loader.flipUp();
+			else
+				loader.flipStop();
+		}
+		
 		if (driveStick.getRawButton(ButtonMappings.shooterShoot)) {
 			shooter.shooterIntake(); //roll in to make sure ball is not in wheels
 			Timer.delay(0.7);
@@ -299,18 +300,9 @@ public class Robot extends IterativeRobot {
 			checkCamera = true;
 		} else {
 			if (checkCamera) {
+				checkCamera = false;
 				checkShooter = true;
 			}
-		}
-		// enable passive autoaim
-		if (driveStick2.getRawButton(ButtonMappings.enableAutoAim)) {
-			camera.enableAutoAim();
-		}
-		if (driveStick2.getRawButton(ButtonMappings.disableAutoAim)) {
-			camera.disableAutoAim();
-		}
-		if (driveStick2.getRawButton(ButtonMappings.loaderIntakeOut)) {
-			loader.rollOut();
 		}
 		rd.arcadeDrive(driveStick);
 
@@ -318,12 +310,10 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void testInit() {
-		
+		System.out.print("Hello! Hello! Hello!\nYou're in test mode by the way!\n");
 	}
 
 	public void testPeriodic() {
-		AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
-		System.out.println(obstacle.stringVal); 
-		System.out.println("You're in test mode, by the way.");
+//		}
 	}
 }

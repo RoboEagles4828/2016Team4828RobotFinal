@@ -37,7 +37,8 @@ public class CameraMotors {
 			while (alive) {
 				// System.out.println("AimThread enabled: " + enabled);
 				if (enabled) {
-					aimCamera();
+					System.out.println("Thread is running");
+					// aimCamera();
 					Timer.delay(delay);
 				}
 			}
@@ -73,17 +74,18 @@ public class CameraMotors {
 		return s;
 	}
 
-	private final static int DEADZONE = 9; // degree of error
+	private final static int DEADZONE = 16; // degree of error
 	// private final static int CAMERA_X_CENTER = 160; // center of camera x
 	// coord
 	// private final static int CAMERA_Y_CENTER = 120; // center of camera y
 	// coord
-	private final static int CAMERA_X_CENTER = 208; // center of camera x coord
+	private final static int CAMERA_X_CENTER = 185; // center of camera x coord
 													// =200
-	private final static int CAMERA_Y_CENTER = 195; // center of camera y coord
-													// =200
+	private final static int CAMERA_Y_CENTER = 180 + 2; // center of camera y coor
+													// =180
 
 	private boolean isCenteredY = false;
+//right neg
 	public void aimCamera() {
 		double[] defaultValue = { -1 };
 		double[] centerX = table.getNumberArray("centerX", defaultValue);
@@ -98,29 +100,39 @@ public class CameraMotors {
 				SmartDashboard.putNumber("GRIP Y: ", yval);
 				SmartDashboard.putNumber("Contour Count: ", centerX.length);
 				if (centerX.length > 0) {
-					if (xval > CAMERA_X_CENTER + DEADZONE) {
-						shooter.rotateRight();
-					} else if (xval < CAMERA_X_CENTER - DEADZONE) {
-						shooter.rotateLeft();
+					if (xval > CAMERA_X_CENTER + DEADZONE / 2) {
+						System.out.println("rotating left");
+						//shooter.rotateLeft(.1);
+						shooter.lockPosition(-250);
+						SmartDashboard.putBoolean("Centered X: ", false);
+					} else if (xval < CAMERA_X_CENTER - DEADZONE / 2) {
+						System.out.println("rotating right");
+						//shooter.rotateRight(.1);
+						shooter.lockPosition(250);
+						SmartDashboard.putBoolean("Centered X: ", false);
 					} else {
 						shooter.rotateStop();
-						System.out.println("CENTERED X");
+						SmartDashboard.putBoolean("Centered X: ", true);
 					}
 					if (yval > CAMERA_Y_CENTER + DEADZONE) {
-						shooter.flipUp(0.05);
-						isCenteredY = false;
 						System.out.println("flipping up");
-					} else if (yval < CAMERA_Y_CENTER - DEADZONE) {
-						shooter.flipDown(-0.18);
+						// shooter.flipUp(-0.02);
+						shooter.lockPosition(650);
+						SmartDashboard.putBoolean("Centered Y: ", false);
 						isCenteredY = false;
-						System.out.println("flipping down");
+					} else if (yval < CAMERA_Y_CENTER - DEADZONE) {
+						System.out.println("flip down");
+						// shooter.flipDown(-0.41);
+						shooter.lockPosition(-1550);
+						SmartDashboard.putBoolean("Centered Y: ", false);
+						isCenteredY = false;
 					} else {
-						if(!isCenteredY){
+						if (!isCenteredY) {
 							shooter.flipStop();
 							shooter.lockPosition();
 							isCenteredY = true;
 						}
-						System.out.println("CENTERED Y");
+						SmartDashboard.putBoolean("Centered Y: ", true);
 					}
 				}
 			}

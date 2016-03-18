@@ -11,15 +11,15 @@ public class Loader {//don't forget about limit switches
 		
 	private final DigitalInput limitLoaderDown = new DigitalInput(Ports.loaderLimitLoaderDown);
 	
-	private static final double rollSpeed = 0.8;
-	private static final double flipUpSpeed = 0.55;
-	private static final double flipDownSpeed = -0.2;
+	private static final double rollSpeed = 1;
+	private static final double flipUpSpeed = 0.45;
+	private static final double flipDownSpeed = -0.175;
 
 	public Loader(int port1, int port2){
 		upDownMotor = new CANTalon(port1);
 		intake = new Victor(port2);
 		
-		upDownMotor.setPID(.2, 0, 0, 0, 0, 0, 0);
+		upDownMotor.setPID(.2, 0, 20, 0, 0, 0, 0);
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 	}
 	
@@ -28,7 +28,6 @@ public class Loader {//don't forget about limit switches
 	}
 	
 	public void lockPosition(){
-		Timer.delay(0.2);
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 		upDownMotor.set(upDownMotor.getEncPosition());
 		System.out.println("setting loader " + upDownMotor.getEncPosition());
@@ -53,6 +52,14 @@ public class Loader {//don't forget about limit switches
 	
 	public void reset(){
 		while(upDownMotor.getEncPosition()>-3400){
+			flipDown();
+		}
+		flipStop();
+		System.out.println("loader up down reset hit limit");
+	}
+	
+	public void reset(Robot r){
+		while(upDownMotor.getEncPosition()>-3400 && r.isAutonomous()){
 			flipDown();
 		}
 		flipStop();
