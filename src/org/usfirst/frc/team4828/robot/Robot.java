@@ -1,10 +1,15 @@
 package org.usfirst.frc.team4828.robot;
 
+import java.io.IOException;
+
 import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
 
 import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,18 +18,25 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //it stops error about main class = null
 public class Robot extends IterativeRobot {
 	private WorldChampionDrive rd;
-	private Joystick driveStick2, driveStick;
+	private Joystick driveStick2, driveStick, climbStick;
 	private CameraMotors camera;
 	private AnalogGyro gyro;
 	private Shooter shooter;
 	private Loader loader;
+	private AnalogInput ultrasonic;
+	private Climber climber;
+
+	private PowerDistributionPanel pdp;
+	private BuiltInAccelerometer accelerometer;
 
 	private SendableChooser positionChooser;
 	private SendableChooser obstacleChooser;
+	private static final double AUTOAIM_DELAY = 7;
 
 	public void robotInit() {// inits the robot
 		driveStick2 = new Joystick(Ports.driveStick2);
 		driveStick = new Joystick(Ports.driveStick);
+		climbStick = new Joystick(Ports.climbStick);
 		rd = new WorldChampionDrive(Ports.driveFrontLeft, Ports.driveRearLeft, Ports.driveFrontRight,
 				Ports.driveRearRight);
 		gyro = new AnalogGyro(Ports.gyro);
@@ -33,6 +45,15 @@ public class Robot extends IterativeRobot {
 				Ports.shooterLeftRightMotor, Ports.shooterServo1, Ports.shooterServo2, Ports.shooterHallEffect);
 		camera = new CameraMotors(shooter);
 		loader = new Loader(Ports.loaderUpDownMotor, Ports.loaderIntakeMotor);
+		climber = new Climber();
+
+		ultrasonic = new AnalogInput(Ports.ultrasonic);
+		pdp = new PowerDistributionPanel();
+		accelerometer = new BuiltInAccelerometer();
+
+		// try{
+		// Process grip = Runtime.getRuntime().
+		// }
 
 		positionChooser = new SendableChooser();
 		positionChooser.addDefault("1", AutoPosition.ONE);
@@ -54,6 +75,7 @@ public class Robot extends IterativeRobot {
 
 		SmartDashboard.putData("Autonomous Position", positionChooser);
 		SmartDashboard.putData("Autonomous Obstacle", obstacleChooser);
+
 	}
 
 	private enum AutoPosition {
@@ -90,93 +112,138 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousInit() {
 		hasRun = false;
+		
+		
 	}
 
 	public void autonomousPeriodic() {
-		AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
-		AutoPosition position = (AutoPosition) obstacleChooser.getSelected();
+		//AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
+		//AutoPosition position = (AutoPosition) positionChooser.getSelected();
 		
-		switch(position){
-		case ONE:
-			//setup robot with back edge of robot on auto line
-			rd.move(Direction.FORWARD, .25, 18, this);
-			loader.reset(this);
-			shooter.reset(this);
-			rd.move(Direction.FORWARD,.25, 18, this); //move from auto line to defense
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 foot + robot length past it for buffer
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 81.85, this); //drive forward and place midpoint of robot on turn point
-			rd.rotateToAngle(240, gyro); //rotate 60 degrees clockwise +  180 to turn robot around backward, back now points at goal
-			camera.enableAutoAim();
-			//robot is now 136.31 inches from goal (14 ft 9.93 inches)
-			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
-			Timer.delay(2);
-			shooter.shoot();
-			break;
-		case TWO:
-			//setup robot with back edge of robot on auto line
-			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 110.71, this); //drive forward to turn point
-			rd.rotateToAngle(240, gyro); //rotate 60 degrees clockwise from forward to point at goal
-			camera.enableAutoAim();
-			//robot is now 78.57 inches from goal
-			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
-			Timer.delay(2);
-	    	shooter.shoot();
-			break;
-		case THREE:
-			//setup robot with back edge of robot on auto line
-			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 27.75, this); //drive forward to turn point 1
-			rd.rotateToAngle(90, gyro); //rotate 90 degrees clockwise
-			rd.move(Direction.FORWARD,.25, 40, this); //drive forward to turn point 2
-			rd.rotateToAngle(180, gyro); //point back end at goal
-			camera.enableAutoAim();
-			//robot is now 108.75 inches from goal
-			// rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
-			Timer.delay(2);
-			shooter.shoot();
-			break;
-		case FOUR:
-			//setup robot with back edge of robot on auto line
-			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 27.75, this); //drive forward to turn point 1
-			//rd.rotateToAngle(-90, gyro); //rotate 90 degrees clockwise
-			//rd.move(Direction.FORWARD,.25, 8); //drive forward to turn point 2
-			rd.rotateToAngle(180, gyro); //point back end at goal
-			camera.enableAutoAim();
-			//robot is now 108.75 inches from goal
-			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
-			Timer.delay(2);
-			shooter.shoot();
-			break;
-		case FIVE:
-			//setup robot with back edge of robot on auto line
-			rd.move(Direction.FORWARD,.25, 36, this); //move front of robot to defense
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 98, this); //defeat defense, move 1 ft + robot length past it for buffer
-			rd.rotateToAngle(0, gyro); //reorient
-			rd.move(Direction.FORWARD,.25, 27.75, this); //drive forward to turn point 1
-			rd.rotateToAngle(-90, gyro); //rotate 90 degrees clockwise
-			rd.move(Direction.FORWARD,.25, 63, this); //drive forward to turn point 2
-			rd.rotateToAngle(180, gyro); //point back end at goal
-			camera.enableAutoAim();
-			//robot is now 108.75 inches from goal
-			//rd.move(Direction.BACK,.25, shootingrange); //move into optimal shooting range
-			Timer.delay(2);
-			shooter.shoot();
-			break;
+		
+		if (!hasRun) {
+//			try { 
+//				new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+//				SmartDashboard.putBoolean("Started GRIP: ", true);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				SmartDashboard.putBoolean("Started GRIP: ", false);
+//				System.out.println("Couldn't start GRIP");
+//			}
+			gyro.reset();
+			rd.autoHack();
+			Timer.delay(2.5);
+			rd.stop();
+			hasRun = true;
 		}
+
+//			
+//			switch (position) {
+//			case ONE:
+//				// setup robot with back edge of robot on auto line
+//				rd.move(Direction.BACKWARD, .65, 18, this);
+//				System.out.println("drove 18");
+//				loader.reset(this);
+//				System.out.println("reset loader");
+//				shooter.reset(this);
+//				rd.move(Direction.BACKWARD, .65, 18, this);
+//				System.out.println("drove 18 again");
+//				rd.move(Direction.BACKWARD, .65, 98, this);
+//				System.out.println("drove 98");
+//				Timer.delay(0.3);
+//				rd.rotateToAngle(0, gyro, this);
+//				Timer.delay(0.3);
+//				System.out.println("reset gyro");
+//				rd.move(Direction.BACKWARD, .65, 81.85, this);
+//				System.out.println("drove 81.85");
+//				rd.rotateToAngle(60, gyro, this);
+//				System.out.println("rotate to 60");
+//				rd.move(Direction.BACKWARD, .3, 48, this);
+//				if (isAutonomous())
+//					loader.reset();
+//				shooter.autoHack(this);
+//				camera.enableAutoAim();
+//				if (isAutonomous()) {
+//					System.out.println("delaying for cam to aim");
+//					Timer.delay(AUTOAIM_DELAY);
+//					shooter.shoot();
+//				}
+//				break;
+//			case TWO:
+//				rd.move(Direction.BACKWARD, .65, 36, this);
+//				rd.move(Direction.BACKWARD, .65, 104, this);
+//				Timer.delay(0.3);
+//				rd.rotateToAngle(0, gyro, this);
+//				Timer.delay(0.3);
+//				rd.move(Direction.BACKWARD, .65, 80.71, this);
+//				rd.rotateToAngle(60, gyro, this);
+//				loader.reset(this);
+//				shooter.autoHack(this);
+//				camera.enableAutoAim();
+//				if (this.isAutonomous()) {
+//					Timer.delay(AUTOAIM_DELAY);
+//					shooter.shoot();
+//				}
+//				break;
+//			case THREE:
+//				// setup robot with back edge of robot on auto line
+//				rd.move(Direction.BACKWARD, .65, 36, this);
+//				rd.move(Direction.BACKWARD, .65, 104, this);
+//				Timer.delay(0.3);
+//				rd.rotateToAngle(0, gyro, this); // reorient
+//				Timer.delay(0.3);
+//				rd.move(Direction.BACKWARD, .65, 45.75, this);
+//				rd.rotateToAngle(90, gyro, this);
+//				rd.move(Direction.BACKWARD, .3, 40, this);
+//				rd.rotateToAngle(0, gyro, this); // point back end at goal
+//				loader.reset(this);
+//				shooter.autoHack(this);
+//				camera.enableAutoAim();
+//				if (this.isAutonomous()) {
+//					Timer.delay(AUTOAIM_DELAY);
+//					shooter.shoot();
+//				}
+//				break;
+//			case FOUR:
+//				// setup robot with back edge of robot on auto line
+//				rd.move(Direction.BACKWARD, .65, 36, this);
+//				rd.move(Direction.BACKWARD, .65, 104, this); // defeat obstacle
+//				Timer.delay(0.3);
+//				rd.rotateToAngle(0, gyro, this);
+//				Timer.delay(0.3);
+//				rd.move(Direction.BACKWARD, .65, 29.75, this);
+//				loader.reset(this);
+//				shooter.autoHack(this);
+//				camera.enableAutoAim();
+//				if (this.isAutonomous()) {
+//					Timer.delay(AUTOAIM_DELAY);
+//					shooter.shoot();
+//				}
+//				break;
+//			case FIVE:
+//				// setup robot with back edge of robot on auto line
+//				rd.move(Direction.BACKWARD, .65, 36, this);
+//				rd.rotateToAngle(0, gyro, this); // reorient
+//				rd.move(Direction.BACKWARD, .65, 104, this);
+//				Timer.delay(0.3);
+//				rd.rotateToAngle(0, gyro, this);
+//				Timer.delay(0.3);
+//				rd.move(Direction.BACKWARD, .65, 21.75, this);
+//				rd.rotateToAngle(-90, gyro, this);
+//				rd.move(Direction.FORWARD, .65, 63, this);
+//				rd.rotateToAngle(180, gyro, this);
+//				loader.reset(this);
+//				shooter.autoHack(this);
+//				camera.enableAutoAim();
+//				if (this.isAutonomous()) {
+//					Timer.delay(AUTOAIM_DELAY);
+//					shooter.shoot();
+//				}
+//				break;
+//			}
+//		}
+		hasRun = true;
+		// }
 		System.out.println("finish auto");
 	}
 
@@ -188,24 +255,52 @@ public class Robot extends IterativeRobot {
 	private boolean checkShooter = false; // needed for PID; don't touch
 	private boolean checkCamera = false;
 
-	public void teleopPeriodic() {
-		SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
-		SmartDashboard.putBoolean("Shooter Hall Effect: ", shooter.getHallEffect());
-		SmartDashboard.putNumber("Shooter UpDown Motor Enc: ", shooter.getUpDownEncPosition());
-		SmartDashboard.putNumber("shooter LeftRight Enc: ", shooter.getLeftRightEncPosition());
-		SmartDashboard.putNumber("Loader upDownMotor Enc: ", loader.getEncPosition());
-		//SmartDashboard.putNumber("Drive RL Enc: ", rd.getRLEnc());
-		SmartDashboard.putBoolean("Loader limit down: ", loader.getLimitDown());
-		SmartDashboard.putBoolean("Inverse Controls: ", rd.inverseControls);
+	private double ultraV = 0;
+	private int ultraSamplingCounter = 0;
 
-		SmartDashboard.putNumber("Ideal Shooter Position: ", 235000);
-		SmartDashboard.putNumber("Ideal Loader Position: ", 0);
+	public void teleopPeriodic() {		
+		if (driveStick2.getPOV() == 90) {
+			SmartDashboard.putNumber("RL Enc: ", rd.rearLeft.getEncPosition());
+			SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
+			SmartDashboard.putBoolean("Shooter Hall Effect: ", shooter.getHallEffect());
+			SmartDashboard.putNumber("Shooter up down enc: ", shooter.getUpDownEncPosition());
+			SmartDashboard.putNumber("shooter LeftRight Enc: ", shooter.getLeftRightEncPosition());
+			SmartDashboard.putNumber("Loader upDownMotor Enc: ", loader.getEncPosition());
+			SmartDashboard.putBoolean("Loader limit down: ", loader.getLimitDown());
+			SmartDashboard.putBoolean("Inverse Controls: ", rd.inverseControls);
+			
+			if (ultraSamplingCounter < 100) {
+				ultraSamplingCounter++;
+				ultraV += ultrasonic.getVoltage();
+			} else {
+				ultraSamplingCounter = 0;
+				ultraV = ultraV / 100;
+				SmartDashboard.putNumber("Raw Ultra : ", ultraV);
+				SmartDashboard.putNumber("Meters    : ", ultraV * 1024 / 1000);
+				SmartDashboard.putNumber("Feet      : ", ultraV * 1024 / 1000 * 3.28);
+				ultraV = 0;
+			}
 
-		if (driveStick.getRawButton(ButtonMappings.loaderUp) || driveStick2.getRawButton(ButtonMappings.loaderUp)) {
+			if (accelerometerOutputCounter < 10) {
+				accelerometerOutputCounter++;
+				accX += accelerometer.getX();
+				accY += accelerometer.getY();
+				accZ += accelerometer.getZ();
+			} else {
+				accelerometerOutputCounter = 0;
+				SmartDashboard.putNumber("Acc X: ", accX / 10);
+				SmartDashboard.putNumber("Acc Y: ", accY / 10);
+				SmartDashboard.putNumber("Acc Z: ", accZ / 10);
+				accX = 0;
+				accY = 0;
+				accZ = 0;
+			}
+		}
+
+		if (driveStick2.getRawButton(ButtonMappings.loaderUp)) {
 			checkLoader = true;
 			loader.flipUp();
-		} else if (driveStick.getRawButton(ButtonMappings.loaderDown)
-				|| driveStick2.getRawButton(ButtonMappings.loaderDown)) {
+		} else if (driveStick2.getRawButton(ButtonMappings.loaderDown)) {
 			checkLoader = true;
 			loader.flipDown();
 		} else {
@@ -215,6 +310,15 @@ public class Robot extends IterativeRobot {
 				checkLoader = false;
 			}
 		}
+
+//		if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
+//			shooter.flipUpSlow();
+//		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
+//			shooter.flipDownSlow();
+//		} else{
+//			shooter.flipStop();
+//			shooter.lockPosition();
+//		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterRotateLeft)
 				|| driveStick2.getRawButton(ButtonMappings.shooterRotateLeft))
@@ -226,7 +330,7 @@ public class Robot extends IterativeRobot {
 			shooter.rotateStop();
 
 		if ((driveStick.getRawButton(ButtonMappings.shooterFlipUp)
-				|| driveStick2.getRawButton(ButtonMappings.shooterFlipUp)) && shooter.getUpDownEncPosition() < -6000 ) {
+				|| driveStick2.getRawButton(ButtonMappings.shooterFlipUp))) {
 			checkShooter = true;
 			shooter.flipUp();
 		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDown)
@@ -251,40 +355,33 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
-			if(shooter.getUpDownEncPosition() > -42500)
-				shooter.flipEnc(-9000);
-			else if (shooter.getUpDownEncPosition() < -45500)
-				shooter.flipEnc(9000);
-			else 
-				shooter.flipStop();
+			shooter.setPosition(-40600);
 		}
-		
-		if(driveStick2.getRawButton(ButtonMappings.shooterMoveToLoad)){
-			if(shooter.getUpDownEncPosition() > -236000)
-				shooter.flipEnc(-9000);
-			else if(shooter.getUpDownEncPosition() < -244000)
-				shooter.flipEnc(9000);
+
+		if (driveStick2.getRawButton(ButtonMappings.shooterMoveToLoad)) {
+			if (shooter.getUpDownEncPosition() > -236000)
+				shooter.changePosition(-9000);
+			else if (shooter.getUpDownEncPosition() < -244000)
+				shooter.changePosition(9000);
 			else
 				shooter.flipStop();
 		}
-		
-		if(driveStick2.getRawButton(ButtonMappings.loaderMoveToLoad)){
-			if(loader.getEncPosition() > -2900)
-				loader.flipDown();
-			else if (loader.getEncPosition() < -3200)
-				loader.flipUp();
-			else
-				loader.flipStop();
+
+		// if(driveStick2.getRawButton(ButtonMappings.loaderMoveToLoad)){
+		// if(loader.getEncPosition() > -2900)
+		// loader.flipDown();
+		// else if (loader.getEncPosition() < -3200)
+		// loader.flipUp();
+		// else
+		// loader.flipStop();
+		// }
+
+		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {
+			shooter.center();
 		}
-		
+
 		if (driveStick.getRawButton(ButtonMappings.shooterShoot)) {
-			shooter.shooterIntake(); //roll in to make sure ball is not in wheels
-			Timer.delay(0.7);
-			shooter.shoot();
-			//shooter.pushServo();
-			//Timer.delay(2);
-			//shooter.stopShooter();
-			//shooter.retractServo();
+			shooter.shoot(); //locks robot into the shooting sequence
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.inverseControls)) {
@@ -294,7 +391,7 @@ public class Robot extends IterativeRobot {
 			rd.inverseControls = false;
 		}
 
-		// hold to aim cam
+		//hold to aim camera
 		if (driveStick2.getRawButton(ButtonMappings.aimCamera)) {
 			camera.aimCamera();
 			checkCamera = true;
@@ -304,16 +401,64 @@ public class Robot extends IterativeRobot {
 				checkShooter = true;
 			}
 		}
-		rd.arcadeDrive(driveStick);
+
+		//rd.arcadeDriveRamp(driveStick);
+		rd.tankDrive(driveStick, climbStick);
+		
+		if (climbStick.getRawButton(ButtonMappings.climberSetup)) {
+			climber.setup();
+		}
+
+		if (climbStick.getRawButton(ButtonMappings.climberLeftUp)) {
+			climber.leftClimberUp();
+		} else if (climbStick.getRawButton(ButtonMappings.climberLeftDown)) {
+			climber.leftClimberDown();
+		} else {
+			climber.leftClimberStop();
+		}
+
+		if (climbStick.getRawButton(ButtonMappings.climberRightUp)) {
+			climber.rightClimberUp();
+		} else if (climbStick.getRawButton(ButtonMappings.climberRightDown)) {
+			climber.rightClimberDown();
+		} else {
+			climber.rightClimberStop();
+		}
+
+		if (climbStick.getRawButton(ButtonMappings.climberStableLeft)) {
+			climber.leftStableUp();
+		} else if (climbStick.getRawButton(ButtonMappings.climberStableLeftDown)) {
+			climber.leftStableDown();
+		} else {
+			climber.leftStableStop();
+		}
+
+		if (climbStick.getRawButton(ButtonMappings.climberStableRight)) {
+			climber.rightStableUp();
+		} else if (climbStick.getRawButton(ButtonMappings.climberStableRightDown)) {
+			climber.rightStableDown();
+		} else {
+			climber.rightStableStop();
+		}
+		
 
 		Timer.delay(0.01);
 	}
 
+	double accelerometerOutputCounter = 0;
+	double accX = 0, accY = 0, accZ = 0;
+
 	public void testInit() {
 		System.out.print("Hello! Hello! Hello!\nYou're in test mode by the way!\n");
+		rd.rotateToAngle(240, gyro, this);
 	}
 
 	public void testPeriodic() {
-//		}
+		Timer.delay(.1);
+		if (driveStick.getRawButton(1)) {
+			rd.rotateToAngle(180, gyro, this);
+		} else {
+			rd.rotateToAngle(0, gyro, this);
+		}
 	}
 }

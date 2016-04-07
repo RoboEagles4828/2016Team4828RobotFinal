@@ -15,23 +15,27 @@ public class Shooter {
 											// left and right wheel
 	private DigitalInput hall_effect; // used for centering
 
-	private static final int midEncPos = -97000;
+	private static final int midEncPos = -97000; //Formerly used to know when to switch speeds when flipping.
 
-	private static final double flipUpSpeed = 0.5;
+	private static final int encPulseChangePerTick = 8000; //Modifying this changes the speed at which the PID loop attempts to move the shooter. 
+
+	//Formerly used as speeds to move the shooter in PercentVBus (voltage) mode
+	private static final double flipUpSpeed = 0.4;
 	private static final double flipUpSpeedInv = 0.2;
 	private static final double flipDownSpeed = -0.2;
-	private static final double flipDownSpeedInv = -0.5;
+	private static final double flipDownSpeedInv = -0.4;
+
+	public static final double flipUpSpeedSlow = 0.2;
+	public static final double flipDownSpeedSlow = -0.1;
 
 	private static final double leftRightMotorSpeed = 0.15;
-	private static final double intakeSpeed = 0.4;
+	private static final double intakeSpeed = 0.6;
 	private static final double shootSpeed = 1;
 
 	// private final DigitalInput limitShooterDown = new
 	// DigitalInput(Ports.shooterLimitShooterDown);
 	// private final DigitalInput limitShooterUp = new
 	// DigitalInput(Ports.shooterLimitShooterUp);
-
-	private int lrZeroPos = 0;
 
 	public Shooter(int shooterMotor1Port, int shooterMotor2Port, int upDownMotorPort, int leftRightMotorPort,
 			int servoPort, int servoPort2, int hallEffectPort) {
@@ -43,8 +47,8 @@ public class Shooter {
 		pusherServo2 = new Servo(servoPort2);
 		hall_effect = new DigitalInput(hallEffectPort);
 
-		upDownMotor.setPID(0.45, 0, 22.5, 0, 0, 0, 0);
-		upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		upDownMotor.setPID(0.45, 0, 14, 0, 0, 0, 0);
+		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 	}
 
 	public void setPosition(int encPos) {
@@ -52,15 +56,22 @@ public class Shooter {
 		upDownMotor.set(encPos);
 	}
 
+	/**
+	 * Locks the motor on the current encoder position.
+	 */
 	public void lockPosition() {
-		Timer.delay(0.2);
-		//System.out.println("locking Shooter @ " + upDownMotor.getEncPosition());
+		// System.out.println("debug: locking Shooter @ " + upDownMotor.getEncPosition());
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 		upDownMotor.set(upDownMotor.getEncPosition());
 	}
 
-	public void lockPosition(int pos) {
-		//Timer.delay(0.1);
+	/**
+	 * Used to flip up or down by a specific number of encoder pulses.
+	 * 
+	 * @param encChange
+	 *            unit in encoder pulses to increase/decrease by
+	 */
+	public void changePosition(int pos) {
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 		upDownMotor.set(upDownMotor.getEncPosition() + pos);
 	}
@@ -82,24 +93,23 @@ public class Shooter {
 	}
 
 	public void center() {
-		while (leftRightMotor.getEncPosition() > 0) {
-			rotateRight();
-		}
-		rotateStop();
-		while (leftRightMotor.getEncPosition() < 0) {
+		if (leftRightMotor.getEncPosition() > 0) {
 			rotateLeft();
-		}
-		rotateStop();
+		} else if (leftRightMotor.getEncPosition() < 0) {
+			rotateRight();
+		} else
+			rotateStop();
 	}
 
 	public boolean getHallEffect() {
 		return !hall_effect.get();
 	}
-	
+
 	public void reset() {
 		while (upDownMotor.getEncPosition() > -190000) {
 			flipDown();
 		}
+		lockPosition();
 		upDownMotor.set(0);
 		System.out.println("passed up down enc pos -190000");
 	}
@@ -113,19 +123,35 @@ public class Shooter {
 	}
 
 	public void rotateLeft(double speed) {
-		leftRightMotor.set(-speed);
+		if (leftRightMotor.getEncPosition() > -75000) {
+			leftRightMotor.set(-speed);
+		} else {
+			leftRightMotor.set(0);
+		}
 	}
 
 	public void rotateRight(double speed) {
-		leftRightMotor.set(speed);
+		if (leftRightMotor.getEncPosition() < 75000) {
+			leftRightMotor.set(speed);
+		} else {
+			leftRightMotor.set(0);
+		}
 	}
 
 	public void rotateLeft() {
-		leftRightMotor.set(-leftRightMotorSpeed);
+		if (leftRightMotor.getEncPosition() > -75000) {
+			leftRightMotor.set(-leftRightMotorSpeed);
+		} else {
+			leftRightMotor.set(0);
+		}
 	}
 
 	public void rotateRight() {
-		leftRightMotor.set(leftRightMotorSpeed);
+		if (leftRightMotor.getEncPosition() < 75000) {
+			leftRightMotor.set(leftRightMotorSpeed);
+		} else {
+			leftRightMotor.set(0);
+		}
 	}
 
 	public void rotateStop() {
@@ -133,12 +159,12 @@ public class Shooter {
 	}
 
 	public void flipUp() {
-//		upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-//		if (upDownMotor.getEncPosition() > midEncPos)
-//			upDownMotor.set(flipUpSpeedInv);
-//		else
-//			upDownMotor.set(flipUpSpeed);
-		lockPosition(16000);
+		/*
+		 * upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		 * if (upDownMotor.getEncPosition() > midEncPos)
+		 * upDownMotor.set(flipUpSpeedInv); else upDownMotor.set(flipUpSpeed);
+		 */
+		changePosition(encPulseChangePerTick);
 	}
 
 	public void flipSpeed(double speed) {
@@ -147,16 +173,23 @@ public class Shooter {
 	}
 
 	public void flipDown() {
-//		upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-//		if (upDownMotor.getEncPosition() > midEncPos)
-//			upDownMotor.set(flipDownSpeedInv);
-//		else
-//			upDownMotor.set(flipDownSpeed);
-		lockPosition(-16000);
+		/*
+		 * upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
+		 * if (upDownMotor.getEncPosition() > midEncPos)
+		 * upDownMotor.set(flipDownSpeedInv); else
+		 * upDownMotor.set(flipDownSpeed);
+		 */
+		changePosition(-encPulseChangePerTick);
 	}
-	
-	public void flipEnc(int encChange){
-		lockPosition(encChange);
+
+	public void flipDownSlow() {
+		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
+		changePosition(-encPulseChangePerTick/2);
+	}
+
+	public void flipUpSlow() {
+		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
+		upDownMotor.set(encPulseChangePerTick/2);
 	}
 
 	public void flipStop() {
@@ -164,51 +197,82 @@ public class Shooter {
 		upDownMotor.set(0);
 	}
 
+	/**
+	 * Causes the shooter wheels to turn inwards; allowing for ball intake.
+	 */
 	public void shooterIntake() {
 		shooterMotor1.set(-intakeSpeed);
 		shooterMotor2.set(intakeSpeed);
 	}
-
+	/**
+	 * Turns off the shooter wheels.
+	 */
 	public void stopShooter() {
 		shooterMotor1.set(0);
 		shooterMotor2.set(0);
 	}
 
+	/**
+	 * Turns on the shooter wheels.
+	 */
 	public void startShooter() {
 		shooterMotor1.set(shootSpeed);
 		shooterMotor2.set(-shootSpeed);
 	}
 
+	/**
+	 * Activates the servos, which pushes the boulder into the shooter's wheels and fires a shot.
+	 */
 	public void pushServo() {
 		pusherServo.set(.4);// .55
 		pusherServo2.set(.4); // .55
 	}
 
+	/**
+	 * Retracts the servos to their original position; ready for ball intake.
+	 */
 	public void retractServo() {
 		pusherServo.set(.86); // 1
 		pusherServo2.set(.86); // 1
 	}
 
+	/**
+	 * Debug method for testing servos.
+	 * @param pos
+	 * position to set the servos to
+	 */
 	public void setServos(double pos) {
 		pusherServo.set(pos);
 		pusherServo2.set(pos);
 	}
 
-	public void setShooterAngle(double angle) {
-		upDownMotor.getEncPosition();
-		System.out.println("Hi");
-	}
-
+	/**
+	 * Locks the robot into the shooting sequence, this involves: Locking the
+	 * shooter position, activating shooter intake for 0.4 seconds, starting the
+	 * shooter wheels for 1.6 seconds, pushing the shooter servos to move the
+	 * ball, stop the shooter and retract servos after .75 seconds.
+	 */
 	public void shoot() {
-		// Timer.delay(10);
+		this.lockPosition();
 		shooterIntake();
 		Timer.delay(0.4);
 		startShooter();
-		// Delay change may be necessary
 		Timer.delay(1.6);
 		pushServo();
 		Timer.delay(0.75);
 		stopShooter();
 		retractServo();
+	}
+
+	public void autoHack(Robot r) {
+		while (getUpDownEncPosition() > -42500 && getUpDownEncPosition() < -45500 && r.isAutonomous()) {
+			if (getUpDownEncPosition() > -42500) {
+				changePosition(-9000);
+			} else if (getUpDownEncPosition() < -45500) {
+				changePosition(9000);
+			}
+		}
+		this.lockPosition();
+		this.flipStop();
 	}
 }

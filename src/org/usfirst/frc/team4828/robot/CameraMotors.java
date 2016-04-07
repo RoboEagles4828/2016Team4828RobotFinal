@@ -37,8 +37,16 @@ public class CameraMotors {
 			while (alive) {
 				// System.out.println("AimThread enabled: " + enabled);
 				if (enabled) {
-					System.out.println("Thread is running");
-					// aimCamera();
+					//System.out.println("Thread is running");
+					aimCamera();
+					double[] defaultValue = { -1 };
+					double[] centerX = table.getNumberArray("centerX", defaultValue);
+					try{
+						if(centerX[0] > 0)
+							SmartDashboard.putString("grip out: ", "I found a contour!");
+					} catch (Exception e){
+						SmartDashboard.putString("grip out: ", "I didn't find a contour...");
+					}
 					Timer.delay(delay);
 				}
 			}
@@ -81,7 +89,7 @@ public class CameraMotors {
 	// coord
 	private final static int CAMERA_X_CENTER = 185; // center of camera x coord
 													// =200
-	private final static int CAMERA_Y_CENTER = 180 + 2; // center of camera y coor
+	private final static int CAMERA_Y_CENTER = 175; // center of camera y coor
 													// =180
 
 	private boolean isCenteredY = false;
@@ -92,7 +100,7 @@ public class CameraMotors {
 		double[] centerY = table.getNumberArray("centerY", defaultValue);
 		try {
 			if (centerX[0] > 0) {
-				// System.out.println("contour found");
+				System.out.println("WE FOUND A CONTOUR FAM\n");
 				int contourUsed = parseContourMap(table.getNumberArray("width", defaultValue));
 				double xval = centerX[contourUsed];
 				double yval = centerY[contourUsed];
@@ -102,13 +110,13 @@ public class CameraMotors {
 				if (centerX.length > 0) {
 					if (xval > CAMERA_X_CENTER + DEADZONE / 2) {
 						System.out.println("rotating left");
-						//shooter.rotateLeft(.1);
-						shooter.lockPosition(-250);
+						shooter.rotateLeft(.1);
+						//shooter.lockPosition(-250);
 						SmartDashboard.putBoolean("Centered X: ", false);
 					} else if (xval < CAMERA_X_CENTER - DEADZONE / 2) {
 						System.out.println("rotating right");
-						//shooter.rotateRight(.1);
-						shooter.lockPosition(250);
+						shooter.rotateRight(.1);
+						//shooter.lockPosition(250);
 						SmartDashboard.putBoolean("Centered X: ", false);
 					} else {
 						shooter.rotateStop();
@@ -117,13 +125,13 @@ public class CameraMotors {
 					if (yval > CAMERA_Y_CENTER + DEADZONE) {
 						System.out.println("flipping up");
 						// shooter.flipUp(-0.02);
-						shooter.lockPosition(650);
+						shooter.changePosition(1000);
 						SmartDashboard.putBoolean("Centered Y: ", false);
 						isCenteredY = false;
 					} else if (yval < CAMERA_Y_CENTER - DEADZONE) {
 						System.out.println("flip down");
 						// shooter.flipDown(-0.41);
-						shooter.lockPosition(-1550);
+						shooter.changePosition(-4000);
 						SmartDashboard.putBoolean("Centered Y: ", false);
 						isCenteredY = false;
 					} else {

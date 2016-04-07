@@ -7,6 +7,7 @@ public class Ports {
 	
 	public static final int driveStick = 0;
 	public static final int driveStick2 = 1;
+	public static final int climbStick = 2;
 	
 	// real robot: 3, 4, 1, 2
 	//practice robot : 0, 1, 3, 2
@@ -16,6 +17,7 @@ public class Ports {
 	public static final int driveRearRight = 2;
 	
 	public static final int gyro = 0;
+	public static final int ultrasonic = 3;
 	
 	public static final int shooterMotor1 = 5;
 	public static final int shooterMotor2 = 6;
@@ -30,4 +32,10 @@ public class Ports {
 	public static final int loaderUpDownMotor = 9;
 	public static final int loaderIntakeMotor = 5;
 	public static final int loaderLimitLoaderDown = 5;	
+	
+	public static final int climberMotorRight = 8;
+	public static final int climberMotorLeft = 2;
+	public static final int stableMotorRight = 1;
+	public static final int stableMotorLeft = 0;
+	
 }

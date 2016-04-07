@@ -1,5 +1,7 @@
 package org.usfirst.frc.team4828.robot;
 
+import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -14,6 +16,9 @@ public class WorldChampionDrive {
 	}
 
 	public boolean inverseControls = false;
+	
+	private final static double LIMITER = .8;
+	//reduces all joystick inputs by the factor of .7; this is essentially a hard cap on what inputs the motors recieve (motors will not go above 75% power)
 
 	public CANTalon frontLeft;
 	public CANTalon rearLeft;
@@ -97,7 +102,9 @@ public class WorldChampionDrive {
 		if (leftStick == null || rightStick == null) {
 			throw new NullPointerException("Null HID provided");
 		}
-		tankDrive(leftStick.getY(), rightStick.getY(), true);
+		double mult = (((-leftStick.getThrottle()+1)/2)*.99);
+		//double mult = 1;
+		tankDrive(-leftStick.getY() * mult, -rightStick.getY() * mult, true);
 	}
 
 	public void tankDrive(double leftValue, double rightValue, boolean squaredInputs) {
@@ -136,6 +143,42 @@ public class WorldChampionDrive {
 		this.arcadeDrive(stick, true);
 	}
 
+	private static final double RAMP_RATE = 0.02;
+	private static final double RANGE = .50;
+	private double ramp(double stickVal, double current){
+		if(stickVal > RANGE){
+			if(current < RANGE)
+				current = RANGE;
+			else{
+				current += RAMP_RATE;
+				if(current > stickVal)
+					current = stickVal;
+			}
+		} else if (stickVal < -RANGE){
+			if(current > -RANGE)
+				current = -RANGE;
+			else{
+				current -= RAMP_RATE;
+				if(current < stickVal)
+					current = stickVal;
+			}
+		} else
+			current = stickVal;
+		return current;
+	}
+
+	private double currentY = 0;
+	private double currentX = 0;
+	public void arcadeDriveRamp(GenericHID stick, boolean squaredInputs) {
+		currentY = ramp(stick.getY(), currentY)*LIMITER;
+		currentX = ramp(stick.getX(), currentX)*LIMITER;
+		arcadeDrive(currentY, currentX, squaredInputs);
+	}
+	
+	public void arcadeDriveRamp(GenericHID stick){
+		arcadeDriveRamp(stick, true);
+	}
+	
 	public void arcadeDrive(GenericHID stick, boolean squaredInputs) {
 		arcadeDrive(stick.getY(), stick.getX(), squaredInputs);
 	}
@@ -199,17 +242,52 @@ public class WorldChampionDrive {
 		rearRight.set(wheelSpeeds[MotorType.kRearRight_val]);
 	}
 
-	public void rotateToAngle(double angle, AnalogGyro gyro) {
+	public void rotateToAngle(double angle, AnalogGyro gyro, Robot r) {
 		if (gyro.getAngle() % 360 > angle) {
-			while (gyro.getAngle() % 360 > angle)
-				move(Direction.SPINLEFT, 0.3);
+			while (gyro.getAngle() % 360 > angle && r.isAutonomous()){
+				move(Direction.SPINLEFT, 0.5);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
+			while (gyro.getAngle() % 360 < angle && r.isAutonomous()){
+				move(Direction.SPINRIGHT, 0.5);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
 		} else if (gyro.getAngle() % 360 < angle) {
-			while (gyro.getAngle() % 360 < angle)
-				move(Direction.SPINRIGHT, 0.3);
+			while (gyro.getAngle() % 360 < angle && r.isAutonomous()){
+				move(Direction.SPINRIGHT, 0.5);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
+			while (gyro.getAngle() % 360 > angle && r.isAutonomous()){
+				move(Direction.SPINLEFT, 0.5);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
 		}
 		stop();
 	}
-
+	
+	public void rotateToAngle(double angle, AnalogGyro gyro) {
+		if (gyro.getAngle() % 360 > angle) {
+			while (gyro.getAngle() % 360 > angle){
+				move(Direction.SPINRIGHT, 0.3);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
+			while (gyro.getAngle() % 360 < angle){
+				move(Direction.SPINLEFT, 0.15);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
+		} else if (gyro.getAngle() % 360 < angle) {
+			while (gyro.getAngle() % 360 < angle){
+				move(Direction.SPINLEFT, 0.3);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
+			while (gyro.getAngle() % 360 > angle){
+				move(Direction.SPINRIGHT, 0.15);
+				//System.out.println("Angle: " + angle + "   Gyro: " + gyro.getAngle());
+			}
+		}
+		stop();
+	}
+	
 	// public void driveRotations(int rotations, double speed) {
 	// int encStart = rearLeft.getEncPosition();
 	// double encIncNeeded = rotations * 1440;
@@ -238,8 +316,7 @@ public class WorldChampionDrive {
 	// }
 	// }
 	//
-	private final static double FUDGE_FACTOR = 288;
-	private final static double PULSE_PER_INCH = 45.830D;
+	private final static double PULSE_PER_INCH = 43D;
 
 	public void move(Direction direction, double speed, double inches, Robot r) {
 		int encStart = rearLeft.getEncPosition();
@@ -247,27 +324,29 @@ public class WorldChampionDrive {
 			System.out.println("Distance requested < 0 inches; put in a valid parameter");
 		else {
 			double encIncNeeded = PULSE_PER_INCH * inches;
-			while (rearLeft.getEncPosition() < encStart + encIncNeeded - FUDGE_FACTOR
-					&& rearLeft.getEncPosition() > encStart - encIncNeeded + FUDGE_FACTOR && r.isAutonomous())
+			while (rearLeft.getEncPosition() < encStart + encIncNeeded
+					&& rearLeft.getEncPosition() > encStart - encIncNeeded && r.isAutonomous()){
+				//System.out.println("rl: " + rearLeft.getEncPosition());
 				move(direction, speed);
+			}
 			stop();
 		}
 	}
 
 	public void autoHack() {
-		frontLeft.set(0.55);
-		frontRight.set(-0.55);
-		rearLeft.set(0.55);
-		rearRight.set(-0.55);
+		frontLeft.set(0.7);
+		frontRight.set(-0.7);
+		rearLeft.set(0.7);
+		rearRight.set(-0.7);
 	}
 
 	public void move(Direction direction, double speed) {
-		if (direction == Direction.BACKWARD) {
+		if (direction == Direction.FORWARD) {
 			frontLeft.set(-speed);
-			frontRight.set(-speed);
+			frontRight.set(speed);
 			rearLeft.set(-speed);
-			rearRight.set(-speed);
-		} else if (direction == Direction.FORWARD) {
+			rearRight.set(speed);
+		} else if (direction == Direction.BACKWARD) {
 			frontLeft.set(speed);
 			frontRight.set(-speed);
 			rearLeft.set(speed);
