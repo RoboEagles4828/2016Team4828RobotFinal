@@ -112,24 +112,22 @@ public class Robot extends IterativeRobot {
 
 	public void autonomousInit() {
 		hasRun = false;
-		
-		
+
 	}
 
 	public void autonomousPeriodic() {
-		//AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
-		//AutoPosition position = (AutoPosition) positionChooser.getSelected();
-		
-		
+		// AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
+		// AutoPosition position = (AutoPosition) positionChooser.getSelected();
+
 		if (!hasRun) {
-//			try { 
-//				new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-//				SmartDashboard.putBoolean("Started GRIP: ", true);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//				SmartDashboard.putBoolean("Started GRIP: ", false);
-//				System.out.println("Couldn't start GRIP");
-//			}
+			// try {
+			// new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+			// SmartDashboard.putBoolean("Started GRIP: ", true);
+			// } catch (Exception e) {
+			// e.printStackTrace();
+			// SmartDashboard.putBoolean("Started GRIP: ", false);
+			// System.out.println("Couldn't start GRIP");
+			// }
 			gyro.reset();
 			rd.autoHack();
 			Timer.delay(2.5);
@@ -137,111 +135,111 @@ public class Robot extends IterativeRobot {
 			hasRun = true;
 		}
 
-//			
-//			switch (position) {
-//			case ONE:
-//				// setup robot with back edge of robot on auto line
-//				rd.move(Direction.BACKWARD, .65, 18, this);
-//				System.out.println("drove 18");
-//				loader.reset(this);
-//				System.out.println("reset loader");
-//				shooter.reset(this);
-//				rd.move(Direction.BACKWARD, .65, 18, this);
-//				System.out.println("drove 18 again");
-//				rd.move(Direction.BACKWARD, .65, 98, this);
-//				System.out.println("drove 98");
-//				Timer.delay(0.3);
-//				rd.rotateToAngle(0, gyro, this);
-//				Timer.delay(0.3);
-//				System.out.println("reset gyro");
-//				rd.move(Direction.BACKWARD, .65, 81.85, this);
-//				System.out.println("drove 81.85");
-//				rd.rotateToAngle(60, gyro, this);
-//				System.out.println("rotate to 60");
-//				rd.move(Direction.BACKWARD, .3, 48, this);
-//				if (isAutonomous())
-//					loader.reset();
-//				shooter.autoHack(this);
-//				camera.enableAutoAim();
-//				if (isAutonomous()) {
-//					System.out.println("delaying for cam to aim");
-//					Timer.delay(AUTOAIM_DELAY);
-//					shooter.shoot();
-//				}
-//				break;
-//			case TWO:
-//				rd.move(Direction.BACKWARD, .65, 36, this);
-//				rd.move(Direction.BACKWARD, .65, 104, this);
-//				Timer.delay(0.3);
-//				rd.rotateToAngle(0, gyro, this);
-//				Timer.delay(0.3);
-//				rd.move(Direction.BACKWARD, .65, 80.71, this);
-//				rd.rotateToAngle(60, gyro, this);
-//				loader.reset(this);
-//				shooter.autoHack(this);
-//				camera.enableAutoAim();
-//				if (this.isAutonomous()) {
-//					Timer.delay(AUTOAIM_DELAY);
-//					shooter.shoot();
-//				}
-//				break;
-//			case THREE:
-//				// setup robot with back edge of robot on auto line
-//				rd.move(Direction.BACKWARD, .65, 36, this);
-//				rd.move(Direction.BACKWARD, .65, 104, this);
-//				Timer.delay(0.3);
-//				rd.rotateToAngle(0, gyro, this); // reorient
-//				Timer.delay(0.3);
-//				rd.move(Direction.BACKWARD, .65, 45.75, this);
-//				rd.rotateToAngle(90, gyro, this);
-//				rd.move(Direction.BACKWARD, .3, 40, this);
-//				rd.rotateToAngle(0, gyro, this); // point back end at goal
-//				loader.reset(this);
-//				shooter.autoHack(this);
-//				camera.enableAutoAim();
-//				if (this.isAutonomous()) {
-//					Timer.delay(AUTOAIM_DELAY);
-//					shooter.shoot();
-//				}
-//				break;
-//			case FOUR:
-//				// setup robot with back edge of robot on auto line
-//				rd.move(Direction.BACKWARD, .65, 36, this);
-//				rd.move(Direction.BACKWARD, .65, 104, this); // defeat obstacle
-//				Timer.delay(0.3);
-//				rd.rotateToAngle(0, gyro, this);
-//				Timer.delay(0.3);
-//				rd.move(Direction.BACKWARD, .65, 29.75, this);
-//				loader.reset(this);
-//				shooter.autoHack(this);
-//				camera.enableAutoAim();
-//				if (this.isAutonomous()) {
-//					Timer.delay(AUTOAIM_DELAY);
-//					shooter.shoot();
-//				}
-//				break;
-//			case FIVE:
-//				// setup robot with back edge of robot on auto line
-//				rd.move(Direction.BACKWARD, .65, 36, this);
-//				rd.rotateToAngle(0, gyro, this); // reorient
-//				rd.move(Direction.BACKWARD, .65, 104, this);
-//				Timer.delay(0.3);
-//				rd.rotateToAngle(0, gyro, this);
-//				Timer.delay(0.3);
-//				rd.move(Direction.BACKWARD, .65, 21.75, this);
-//				rd.rotateToAngle(-90, gyro, this);
-//				rd.move(Direction.FORWARD, .65, 63, this);
-//				rd.rotateToAngle(180, gyro, this);
-//				loader.reset(this);
-//				shooter.autoHack(this);
-//				camera.enableAutoAim();
-//				if (this.isAutonomous()) {
-//					Timer.delay(AUTOAIM_DELAY);
-//					shooter.shoot();
-//				}
-//				break;
-//			}
-//		}
+		//
+		// switch (position) {
+		// case ONE:
+		// // setup robot with back edge of robot on auto line
+		// rd.move(Direction.BACKWARD, .65, 18, this);
+		// System.out.println("drove 18");
+		// loader.reset(this);
+		// System.out.println("reset loader");
+		// shooter.reset(this);
+		// rd.move(Direction.BACKWARD, .65, 18, this);
+		// System.out.println("drove 18 again");
+		// rd.move(Direction.BACKWARD, .65, 98, this);
+		// System.out.println("drove 98");
+		// Timer.delay(0.3);
+		// rd.rotateToAngle(0, gyro, this);
+		// Timer.delay(0.3);
+		// System.out.println("reset gyro");
+		// rd.move(Direction.BACKWARD, .65, 81.85, this);
+		// System.out.println("drove 81.85");
+		// rd.rotateToAngle(60, gyro, this);
+		// System.out.println("rotate to 60");
+		// rd.move(Direction.BACKWARD, .3, 48, this);
+		// if (isAutonomous())
+		// loader.reset();
+		// shooter.autoHack(this);
+		// camera.enableAutoAim();
+		// if (isAutonomous()) {
+		// System.out.println("delaying for cam to aim");
+		// Timer.delay(AUTOAIM_DELAY);
+		// shooter.shoot();
+		// }
+		// break;
+		// case TWO:
+		// rd.move(Direction.BACKWARD, .65, 36, this);
+		// rd.move(Direction.BACKWARD, .65, 104, this);
+		// Timer.delay(0.3);
+		// rd.rotateToAngle(0, gyro, this);
+		// Timer.delay(0.3);
+		// rd.move(Direction.BACKWARD, .65, 80.71, this);
+		// rd.rotateToAngle(60, gyro, this);
+		// loader.reset(this);
+		// shooter.autoHack(this);
+		// camera.enableAutoAim();
+		// if (this.isAutonomous()) {
+		// Timer.delay(AUTOAIM_DELAY);
+		// shooter.shoot();
+		// }
+		// break;
+		// case THREE:
+		// // setup robot with back edge of robot on auto line
+		// rd.move(Direction.BACKWARD, .65, 36, this);
+		// rd.move(Direction.BACKWARD, .65, 104, this);
+		// Timer.delay(0.3);
+		// rd.rotateToAngle(0, gyro, this); // reorient
+		// Timer.delay(0.3);
+		// rd.move(Direction.BACKWARD, .65, 45.75, this);
+		// rd.rotateToAngle(90, gyro, this);
+		// rd.move(Direction.BACKWARD, .3, 40, this);
+		// rd.rotateToAngle(0, gyro, this); // point back end at goal
+		// loader.reset(this);
+		// shooter.autoHack(this);
+		// camera.enableAutoAim();
+		// if (this.isAutonomous()) {
+		// Timer.delay(AUTOAIM_DELAY);
+		// shooter.shoot();
+		// }
+		// break;
+		// case FOUR:
+		// // setup robot with back edge of robot on auto line
+		// rd.move(Direction.BACKWARD, .65, 36, this);
+		// rd.move(Direction.BACKWARD, .65, 104, this); // defeat obstacle
+		// Timer.delay(0.3);
+		// rd.rotateToAngle(0, gyro, this);
+		// Timer.delay(0.3);
+		// rd.move(Direction.BACKWARD, .65, 29.75, this);
+		// loader.reset(this);
+		// shooter.autoHack(this);
+		// camera.enableAutoAim();
+		// if (this.isAutonomous()) {
+		// Timer.delay(AUTOAIM_DELAY);
+		// shooter.shoot();
+		// }
+		// break;
+		// case FIVE:
+		// // setup robot with back edge of robot on auto line
+		// rd.move(Direction.BACKWARD, .65, 36, this);
+		// rd.rotateToAngle(0, gyro, this); // reorient
+		// rd.move(Direction.BACKWARD, .65, 104, this);
+		// Timer.delay(0.3);
+		// rd.rotateToAngle(0, gyro, this);
+		// Timer.delay(0.3);
+		// rd.move(Direction.BACKWARD, .65, 21.75, this);
+		// rd.rotateToAngle(-90, gyro, this);
+		// rd.move(Direction.FORWARD, .65, 63, this);
+		// rd.rotateToAngle(180, gyro, this);
+		// loader.reset(this);
+		// shooter.autoHack(this);
+		// camera.enableAutoAim();
+		// if (this.isAutonomous()) {
+		// Timer.delay(AUTOAIM_DELAY);
+		// shooter.shoot();
+		// }
+		// break;
+		// }
+		// }
 		hasRun = true;
 		// }
 		System.out.println("finish auto");
@@ -258,7 +256,7 @@ public class Robot extends IterativeRobot {
 	private double ultraV = 0;
 	private int ultraSamplingCounter = 0;
 
-	public void teleopPeriodic() {		
+	public void teleopPeriodic() {
 		if (driveStick2.getPOV() == 90) {
 			SmartDashboard.putNumber("RL Enc: ", rd.rearLeft.getEncPosition());
 			SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
@@ -268,7 +266,7 @@ public class Robot extends IterativeRobot {
 			SmartDashboard.putNumber("Loader upDownMotor Enc: ", loader.getEncPosition());
 			SmartDashboard.putBoolean("Loader limit down: ", loader.getLimitDown());
 			SmartDashboard.putBoolean("Inverse Controls: ", rd.inverseControls);
-			
+
 			if (ultraSamplingCounter < 100) {
 				ultraSamplingCounter++;
 				ultraV += ultrasonic.getVoltage();
@@ -311,14 +309,15 @@ public class Robot extends IterativeRobot {
 			}
 		}
 
-//		if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
-//			shooter.flipUpSlow();
-//		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
-//			shooter.flipDownSlow();
-//		} else{
-//			shooter.flipStop();
-//			shooter.lockPosition();
-//		}
+		// if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
+		// shooter.flipUpSlow();
+		// } else if
+		// (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
+		// shooter.flipDownSlow();
+		// } else{
+		// shooter.flipStop();
+		// shooter.lockPosition();
+		// }
 
 		if (driveStick.getRawButton(ButtonMappings.shooterRotateLeft)
 				|| driveStick2.getRawButton(ButtonMappings.shooterRotateLeft))
@@ -381,7 +380,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterShoot)) {
-			shooter.shoot(); //locks robot into the shooting sequence
+			shooter.shoot(); // locks robot into the shooting sequence
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.inverseControls)) {
@@ -391,7 +390,7 @@ public class Robot extends IterativeRobot {
 			rd.inverseControls = false;
 		}
 
-		//hold to aim camera
+		// hold to aim camera
 		if (driveStick2.getRawButton(ButtonMappings.aimCamera)) {
 			camera.aimCamera();
 			checkCamera = true;
@@ -402,9 +401,9 @@ public class Robot extends IterativeRobot {
 			}
 		}
 
-		//rd.arcadeDriveRamp(driveStick);
+		// rd.arcadeDriveRamp(driveStick);
 		rd.tankDrive(driveStick, climbStick);
-		
+
 		if (climbStick.getRawButton(ButtonMappings.climberSetup)) {
 			climber.setup();
 		}
@@ -440,7 +439,6 @@ public class Robot extends IterativeRobot {
 		} else {
 			climber.rightStableStop();
 		}
-		
 
 		Timer.delay(0.01);
 	}

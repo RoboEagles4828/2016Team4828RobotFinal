@@ -23,19 +23,19 @@ public class Ports {
 	public static final int shooterMotor2 = 6;
 	public static final int shooterUpDownMotor = 16;
 	public static final int shooterLeftRightMotor = 7;
-	public static final int shooterServo1 = 6;
-	public static final int shooterServo2 = 7;
+	public static final int shooterServo1 = 6; //PWM
+	public static final int shooterServo2 = 7; //PWM
 	public static final int shooterHallEffect = 9;
 	public static final int shooterLimitShooterDown = 4;
 	public static final int shooterLimitShooterUp = 5;
 	
-	public static final int loaderUpDownMotor = 9;
-	public static final int loaderIntakeMotor = 5;
+	public static final int loaderUpDownMotor = 9; 
+	public static final int loaderIntakeMotor = 9; //PWM
 	public static final int loaderLimitLoaderDown = 5;	
 	
-	public static final int climberMotorRight = 8;
-	public static final int climberMotorLeft = 2;
-	public static final int stableMotorRight = 1;
-	public static final int stableMotorLeft = 0;
+	public static final int climberMotorRight = 8; 
+	public static final int climberMotorLeft = 2; //PWM 
+	public static final int stableMotorRight = 1; //PWM
+	public static final int stableMotorLeft = 2; //PWM
 	
 }
