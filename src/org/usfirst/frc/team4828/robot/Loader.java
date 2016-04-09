@@ -68,7 +68,7 @@ public class Loader {
 
 	//auto version
 	public void reset(Robot r) {
-		while (upDownMotor.getEncPosition() > -3400 && r.isAutonomous()) {
+		while (upDownMotor.getEncPosition() > -3000 && r.isAutonomous()) {
 			flipDown();
 		}
 		flipStop();

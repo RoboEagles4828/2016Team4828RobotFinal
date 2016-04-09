@@ -130,13 +130,14 @@ public class Robot extends IterativeRobot {
 //			rd.stop();
 			if(obstacle == AutoObstacle.LOW_BAR){
 				rd.move(Direction.FORWARD, 40, 18, this);
-				loader.reset();
+				loader.reset(this);
 				Timer.delay(.5);
-				shooter.reset();
-				Timer.delay(1);
+				//shooter.reset(this);
+				Timer.delay(.5);
 			}
 			rd.autoHack();
-			Timer.delay(2);
+			Timer.delay(2.3);
+			rd.stop();
 			hasRun = true;
 		}
 
@@ -369,7 +370,7 @@ public class Robot extends IterativeRobot {
 		}
 		
 		if(driveStick2.getRawButton(ButtonMappings.shooterLoadSet)){
-		//	shooter.setPosition(-288000);
+			shooter.setPosition(-288000);
 		}
 
 		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {

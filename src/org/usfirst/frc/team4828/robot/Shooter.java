@@ -107,19 +107,19 @@ public class Shooter {
 	}
 
 	public void reset() {
-		while (upDownMotor.getEncPosition() > -190000) {
+		while (upDownMotor.getEncPosition() > -275000) {
 			flipDown();
 		}
 		lockPosition();
-		System.out.println("passed up down enc pos -190000");
+		System.out.println("passed up down enc pos -275000");
 	}
 
 	public void reset(Robot r) {
-		while (upDownMotor.getEncPosition() > -190000 && r.isAutonomous()) {
+		while (upDownMotor.getEncPosition() > -275000 && r.isAutonomous()) {
 			flipDown();
 		}
 		upDownMotor.set(0);
-		System.out.println("passed up down enc pos -190000");
+		System.out.println("passed up down enc pos -275000");
 	}
 
 	public void rotateLeft(double speed) {
@@ -212,12 +212,19 @@ public class Shooter {
 		shooterMotor2.set(0);
 	}
 
+	private final static double SHOOTER_RAMP_BASE = .2;
+	private final static double SHOOTER_RAMP_RATE = 0.04;
 	/**
 	 * Turns on the shooter wheels.
 	 */
 	public void startShooter() {
-		shooterMotor1.set(shootSpeed);
-		shooterMotor2.set(-shootSpeed);
+		double shootSpeed = SHOOTER_RAMP_BASE;
+		while(shootSpeed < 1){
+			shootSpeed += SHOOTER_RAMP_RATE;
+			shooterMotor1.set(shootSpeed);
+			shooterMotor2.set(-shootSpeed);
+			Timer.delay(0.02);
+		}
 	}
 
 	/**
@@ -255,9 +262,9 @@ public class Shooter {
 	public void shoot() {
 		this.lockPosition();
 		shooterIntake();
-		Timer.delay(0.4);
+		Timer.delay(0.15);
 		startShooter();
-		Timer.delay(1.6);
+		Timer.delay(1.25);
 		pushServo();
 		Timer.delay(0.75);
 		stopShooter();
