@@ -11,7 +11,7 @@ public class Loader {
 
 	private final DigitalInput limitLoaderDown = new DigitalInput(Ports.loaderLimitLoaderDown);
 
-	private static final double rollSpeed = 1;
+	private static final double rollSpeed = -1;
 	private static final double flipUpSpeed = 0.4;
 	private static final double flipDownSpeed = -0.175;
 
@@ -31,6 +31,11 @@ public class Loader {
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 		upDownMotor.set(upDownMotor.getEncPosition());
 		System.out.println("setting loader " + upDownMotor.getEncPosition());
+	}
+	
+	public void setPosition(int pos){
+		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
+		upDownMotor.set(pos);
 	}
 
 	public boolean getLimitDown() {

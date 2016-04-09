@@ -36,6 +36,6 @@ public class Ports {
 	public static final int climberMotorRight = 8; 
 	public static final int climberMotorLeft = 2; //PWM 
 	public static final int stableMotorRight = 1; //PWM
-	public static final int stableMotorLeft = 2; //PWM
+	public static final int stableMotorLeft = 8; //PWM
 	
 }

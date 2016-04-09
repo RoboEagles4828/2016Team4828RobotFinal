@@ -143,8 +143,8 @@ public class WorldChampionDrive {
 		this.arcadeDrive(stick, true);
 	}
 
-	private static final double RAMP_RATE = 0.02;
-	private static final double RANGE = .50;
+	private static final double RAMP_RATE = 0.04;
+	private static final double RANGE = .40;
 	private double ramp(double stickVal, double current){
 		if(stickVal > RANGE){
 			if(current < RANGE)
@@ -166,12 +166,35 @@ public class WorldChampionDrive {
 			current = stickVal;
 		return current;
 	}
+	
+	private double ramp(double stickVal, double current, double rampRate, double range){
+		if(stickVal > range){
+			if(current < range)
+				current = range;
+			else{
+				current += rampRate;
+				if(current > stickVal)
+					current = stickVal;
+			}
+		} else if (stickVal < -range){
+			if(current > -range)
+				current = -range;
+			else{
+				current -= rampRate;
+				if(current < stickVal)
+					current = stickVal;
+			}
+		} else
+			current = stickVal;
+		return current;
+	}
 
 	private double currentY = 0;
 	private double currentX = 0;
 	public void arcadeDriveRamp(GenericHID stick, boolean squaredInputs) {
-		currentY = ramp(stick.getY(), currentY)*LIMITER;
-		currentX = ramp(stick.getX(), currentX)*LIMITER;
+		//currentY = ramp(stick.getY(), currentY);
+		currentY = ramp(stick.getY(), currentY, 0.03, 80);
+		currentX = ramp(stick.getX(), currentX);
 		arcadeDrive(currentY, currentX, squaredInputs);
 	}
 	

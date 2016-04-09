@@ -6,9 +6,6 @@ public class ButtonMappings {
 	}
 	
 	//shared between joysticks
-	
-	
-	
 	public static final int loaderIntakeOn = 5;
 	public static final int loaderIntakeOff = 3;
 	
@@ -27,10 +24,7 @@ public class ButtonMappings {
 	
 	//exclusive to second joystick
 	public static final int aimCamera = 1; //hold to aim cam; 1 = trigger
-	//4 and 6 are free
 	public static final int shooterCenter = 6;
-	public static final int loaderMoveToLoad = 4;
-	public static final int shooterMoveToLoad = 2;
 	public static final int loaderUp = 10;
 	public static final int loaderDown = 9;
 	
@@ -47,5 +41,5 @@ public class ButtonMappings {
 	public static final int climberStableRightDown = 8;
 	
 	public static final int climberSetup = 1;
-	
+	public static final int loaderSet = 2;
 }

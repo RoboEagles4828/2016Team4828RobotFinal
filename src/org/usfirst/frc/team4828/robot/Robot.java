@@ -51,10 +51,6 @@ public class Robot extends IterativeRobot {
 		pdp = new PowerDistributionPanel();
 		accelerometer = new BuiltInAccelerometer();
 
-		// try{
-		// Process grip = Runtime.getRuntime().
-		// }
-
 		positionChooser = new SendableChooser();
 		positionChooser.addDefault("1", AutoPosition.ONE);
 		positionChooser.addObject("2", AutoPosition.TWO);
@@ -257,7 +253,7 @@ public class Robot extends IterativeRobot {
 	private int ultraSamplingCounter = 0;
 
 	public void teleopPeriodic() {
-		if (driveStick2.getPOV() == 90) {
+		if (driveStick.getPOV() == 90) {
 			SmartDashboard.putNumber("RL Enc: ", rd.rearLeft.getEncPosition());
 			SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
 			SmartDashboard.putBoolean("Shooter Hall Effect: ", shooter.getHallEffect());
@@ -336,6 +332,12 @@ public class Robot extends IterativeRobot {
 				|| driveStick2.getRawButton(ButtonMappings.shooterFlipDown)) {
 			checkShooter = true;
 			shooter.flipDown();
+		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
+			//checkShooter = true;
+			//shooter.flipUpSlow();
+		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
+			//checkShooter = true;
+			//shooter.flipDownSlow();
 		} else {
 			if (checkShooter) {
 				checkShooter = false;
@@ -354,26 +356,8 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
-			shooter.setPosition(-40600);
+			shooter.setPosition(-66000);
 		}
-
-		if (driveStick2.getRawButton(ButtonMappings.shooterMoveToLoad)) {
-			if (shooter.getUpDownEncPosition() > -236000)
-				shooter.changePosition(-9000);
-			else if (shooter.getUpDownEncPosition() < -244000)
-				shooter.changePosition(9000);
-			else
-				shooter.flipStop();
-		}
-
-		// if(driveStick2.getRawButton(ButtonMappings.loaderMoveToLoad)){
-		// if(loader.getEncPosition() > -2900)
-		// loader.flipDown();
-		// else if (loader.getEncPosition() < -3200)
-		// loader.flipUp();
-		// else
-		// loader.flipStop();
-		// }
 
 		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {
 			shooter.center();
@@ -400,12 +384,16 @@ public class Robot extends IterativeRobot {
 				checkShooter = true;
 			}
 		}
+		
+		if(climbStick.getRawButton(ButtonMappings.loaderSet)){
+			loader.setPosition(-3000);
+		}
 
-		// rd.arcadeDriveRamp(driveStick);
-		rd.tankDrive(driveStick, climbStick);
-
+		rd.arcadeDriveRamp(driveStick);
+		//rd.tankDrive(driveStick, climbStick);
+		
 		if (climbStick.getRawButton(ButtonMappings.climberSetup)) {
-			climber.setup();
+			//climber.setup();
 		}
 
 		if (climbStick.getRawButton(ButtonMappings.climberLeftUp)) {

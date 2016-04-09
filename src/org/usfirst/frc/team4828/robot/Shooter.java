@@ -18,7 +18,8 @@ public class Shooter {
 	private static final int midEncPos = -97000; //Formerly used to know when to switch speeds when flipping.
 
 	private static final int encPulseChangePerTick = 8000; //Modifying this changes the speed at which the PID loop attempts to move the shooter. 
-
+	private static final int encPulseChangePerTickSlow = 6250;
+	
 	//Formerly used as speeds to move the shooter in PercentVBus (voltage) mode
 	private static final double flipUpSpeed = 0.4;
 	private static final double flipUpSpeedInv = 0.2;
@@ -184,12 +185,12 @@ public class Shooter {
 
 	public void flipDownSlow() {
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
-		changePosition(-encPulseChangePerTick/2);
+		changePosition(-encPulseChangePerTickSlow);
 	}
 
 	public void flipUpSlow() {
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
-		upDownMotor.set(encPulseChangePerTick/2);
+		upDownMotor.set(encPulseChangePerTickSlow);
 	}
 
 	public void flipStop() {

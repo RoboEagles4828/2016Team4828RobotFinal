@@ -40,7 +40,7 @@ public class CameraMotors {
 					//System.out.println("Thread is running");
 					aimCamera();
 					double[] defaultValue = { -1 };
-					double[] centerX = table.getNumberArray("centerX", defaultValue);
+					double[] centerX = table.getNumberArray("centerXnew", defaultValue);
 					try{
 						if(centerX[0] > 0)
 							SmartDashboard.putString("grip out: ", "I found a contour!");
@@ -96,8 +96,8 @@ public class CameraMotors {
 //right neg
 	public void aimCamera() {
 		double[] defaultValue = { -1 };
-		double[] centerX = table.getNumberArray("centerX", defaultValue);
-		double[] centerY = table.getNumberArray("centerY", defaultValue);
+		double[] centerX = table.getNumberArray("centerXnew", defaultValue);
+		double[] centerY = table.getNumberArray("centerYnew", defaultValue);
 		try {
 			if (centerX[0] > 0) {
 				System.out.println("WE FOUND A CONTOUR FAM\n");
@@ -198,8 +198,8 @@ public class CameraMotors {
 		double[] defaultValue = { 0 };
 		double[] widths = table.getNumberArray("width", defaultValue);
 		double[] heights = table.getNumberArray("heights", defaultValue);
-		double[] centerX = table.getNumberArray("centerX", defaultValue);
-		double[] centerY = table.getNumberArray("centerY", defaultValue);
+		double[] centerX = table.getNumberArray("centerXnew", defaultValue);
+		double[] centerY = table.getNumberArray("centerYnew", defaultValue);
 		double[] areas = table.getNumberArray("area", defaultValue);
 
 		System.out.println("It's width is " + arrOutput(widths) + ".");
