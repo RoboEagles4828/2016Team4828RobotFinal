@@ -80,6 +80,7 @@ public class Loader {
 	}
 
 	public void flipUp() {
+		System.out.println("Loader flip UP");
 		if (upDownMotor.getEncPosition() < -900) {
 			upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 			upDownMotor.set(flipUpSpeed);
@@ -90,6 +91,7 @@ public class Loader {
 
 	public void flipDown() {
 		// if(!limitLoaderDown.get())
+		System.out.println("Loader flip DOWN");
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		upDownMotor.set(flipDownSpeed);
 		// else

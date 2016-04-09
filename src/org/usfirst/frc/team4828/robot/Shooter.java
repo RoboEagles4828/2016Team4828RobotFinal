@@ -107,7 +107,7 @@ public class Shooter {
 	}
 
 	public void reset() {
-		while (upDownMotor.getEncPosition() > -275000) {
+		while (upDownMotor.getEncPosition() > -298000) {
 			flipDown();
 		}
 		lockPosition();
@@ -115,7 +115,7 @@ public class Shooter {
 	}
 
 	public void reset(Robot r) {
-		while (upDownMotor.getEncPosition() > -275000 && r.isAutonomous()) {
+		while (upDownMotor.getEncPosition() > -298000 && r.isAutonomous()) {
 			flipDown();
 		}
 		lockPosition();
@@ -159,6 +159,7 @@ public class Shooter {
 	}
 
 	public void flipUp() {
+		System.out.println("Shooter flip UP");
 		/*
 		 * upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		 * if (upDownMotor.getEncPosition() > midEncPos)
@@ -173,6 +174,7 @@ public class Shooter {
 	}
 
 	public void flipDown() {
+		System.out.println("Shooter flip DOWN");
 		/*
 		 * upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 		 * if (upDownMotor.getEncPosition() > midEncPos)

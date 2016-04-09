@@ -128,16 +128,15 @@ public class Robot extends IterativeRobot {
 //			rd.autoHack();
 //			Timer.delay(2.5);
 //			rd.stop();
-			if(obstacle == AutoObstacle.LOW_BAR){
-				rd.move(Direction.BACKWARD, 40, 18, this);
+			//if(obstacle == AutoObstacle.LOW_BAR){
+				rd.move(Direction.BACKWARD, 30, 18, this);
 				loader.reset(this);
 				Timer.delay(.5);
 				shooter.reset(this);
 				Timer.delay(.5);
-				
-			}
+			//}
 			rd.autoHack();
-			Timer.delay(2.3);
+			Timer.delay(2.5);
 			rd.stop();
 //			if(obstacle == AutoObstacle.LOW_BAR){
 //				//experimental
@@ -166,7 +165,7 @@ public class Robot extends IterativeRobot {
 //			}
 			
 			
-			
+			System.out.println("Finished Autonomous!");
 			hasRun = true;
 		}
 
@@ -277,7 +276,7 @@ public class Robot extends IterativeRobot {
 		// }
 		hasRun = true;
 		// }
-		System.out.println("finish auto");
+		
 	}
 
 	public void teleopInit() {
