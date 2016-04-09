@@ -129,7 +129,7 @@ public class Robot extends IterativeRobot {
 //			Timer.delay(2.5);
 //			rd.stop();
 			if(obstacle == AutoObstacle.LOW_BAR){
-				rd.move(Direction.FORWARD, 40, 18, this);
+				rd.move(Direction.BACKWARD, 40, 18, this);
 				loader.reset(this);
 				Timer.delay(.5);
 				shooter.reset(this);

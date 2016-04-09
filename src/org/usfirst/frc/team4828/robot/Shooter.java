@@ -118,7 +118,7 @@ public class Shooter {
 		while (upDownMotor.getEncPosition() > -275000 && r.isAutonomous()) {
 			flipDown();
 		}
-		upDownMotor.set(0);
+		lockPosition();
 		System.out.println("passed up down enc pos -275000");
 	}
 
