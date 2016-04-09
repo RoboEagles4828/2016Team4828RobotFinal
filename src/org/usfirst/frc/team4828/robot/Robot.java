@@ -377,6 +377,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterShoot)) {
+			loader.rollStop();
 			shooter.shoot(); // locks robot into the shooting sequence
 		}
 
