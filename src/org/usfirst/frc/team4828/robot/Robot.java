@@ -132,12 +132,41 @@ public class Robot extends IterativeRobot {
 				rd.move(Direction.FORWARD, 40, 18, this);
 				loader.reset(this);
 				Timer.delay(.5);
-				//shooter.reset(this);
+				shooter.reset(this);
 				Timer.delay(.5);
+				
 			}
 			rd.autoHack();
 			Timer.delay(2.3);
 			rd.stop();
+//			if(obstacle == AutoObstacle.LOW_BAR){
+//				//experimental
+//				while(ultraSamplingCounter < 100){ //take 100 readings to start
+//					ultraV = ultraV + ultrasonic.getVoltage();
+//				}
+//				ultraV = ultraV/100; //average the readings
+//				ultraV = ultrasonic.getVoltage() * 1024/1000 *3.28; //convert to feet
+//				System.out.println("feet: " + ultraV);
+//				while(ultraV > 6){ //while 6 feet away
+//					rd.move(Direction.FORWARD, 25);
+//					if (ultraSamplingCounter < 100) {
+//						ultraSamplingCounter++;
+//						ultraV += ultrasonic.getVoltage();
+//					} else {
+//						ultraSamplingCounter = 0;
+//						ultraV = ultraV / 100; //since we took 100 readings
+//						ultraV = ultraV * 1024 / 1000 * 3.28; //convert to feet
+//						ultraV = 0;
+//					}
+//				}
+//				rd.stop();
+//				rd.rotateToAngle(60, gyro, this);
+//				rd.move(Direction.FORWARD, 30, 30, this);
+//				shooter.shoot();
+//			}
+			
+			
+			
 			hasRun = true;
 		}
 

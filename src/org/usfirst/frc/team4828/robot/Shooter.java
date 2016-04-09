@@ -264,7 +264,7 @@ public class Shooter {
 		shooterIntake();
 		Timer.delay(0.15);
 		startShooter();
-		Timer.delay(1.25);
+		Timer.delay(1.2);
 		pushServo();
 		Timer.delay(0.75);
 		stopShooter();
