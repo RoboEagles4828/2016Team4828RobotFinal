@@ -111,7 +111,6 @@ public class Shooter {
 			flipDown();
 		}
 		lockPosition();
-		upDownMotor.set(0);
 		System.out.println("passed up down enc pos -190000");
 	}
 

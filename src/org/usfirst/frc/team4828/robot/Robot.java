@@ -112,7 +112,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		// AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
+		AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
 		// AutoPosition position = (AutoPosition) positionChooser.getSelected();
 
 		if (!hasRun) {
@@ -125,9 +125,18 @@ public class Robot extends IterativeRobot {
 			// System.out.println("Couldn't start GRIP");
 			// }
 			gyro.reset();
+//			rd.autoHack();
+//			Timer.delay(2.5);
+//			rd.stop();
+			if(obstacle == AutoObstacle.LOW_BAR){
+				rd.move(Direction.FORWARD, 40, 18, this);
+				loader.reset();
+				Timer.delay(.5);
+				shooter.reset();
+				Timer.delay(1);
+			}
 			rd.autoHack();
-			Timer.delay(2.5);
-			rd.stop();
+			Timer.delay(2);
 			hasRun = true;
 		}
 
@@ -356,7 +365,11 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
-			shooter.setPosition(-66000);
+			shooter.setPosition(-66000); //-66000 HIGH
+		}
+		
+		if(driveStick2.getRawButton(ButtonMappings.shooterLoadSet)){
+		//	shooter.setPosition(-288000);
 		}
 
 		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {
@@ -386,7 +399,7 @@ public class Robot extends IterativeRobot {
 		}
 		
 		if(climbStick.getRawButton(ButtonMappings.loaderSet)){
-			loader.setPosition(-3000);
+			loader.setPosition(-2900);
 		}
 
 		rd.arcadeDriveRamp(driveStick);
@@ -395,7 +408,6 @@ public class Robot extends IterativeRobot {
 		if (climbStick.getRawButton(ButtonMappings.climberSetup)) {
 			//climber.setup();
 		}
-
 		if (climbStick.getRawButton(ButtonMappings.climberLeftUp)) {
 			climber.leftClimberUp();
 		} else if (climbStick.getRawButton(ButtonMappings.climberLeftDown)) {

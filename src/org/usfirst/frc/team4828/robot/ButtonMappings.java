@@ -24,6 +24,7 @@ public class ButtonMappings {
 	
 	//exclusive to second joystick
 	public static final int aimCamera = 1; //hold to aim cam; 1 = trigger
+	public static final int shooterLoadSet = 2;
 	public static final int shooterCenter = 6;
 	public static final int loaderUp = 10;
 	public static final int loaderDown = 9;
