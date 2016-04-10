@@ -12,7 +12,7 @@ public class CameraMotors {
 	public class AimThread extends Thread {
 		private boolean enabled = false;
 		private boolean alive = true;
-		private double delay = 0.02;
+		private double delay = 0.05;
 
 		public AimThread(double delay) {
 			this.delay = delay;
@@ -38,14 +38,17 @@ public class CameraMotors {
 				// System.out.println("AimThread enabled: " + enabled);
 				if (enabled) {
 					//System.out.println("Thread is running");
-					aimCamera();
+					//aimCamera();
 					double[] defaultValue = { -1 };
-					double[] centerX = table.getNumberArray("centerXnew", defaultValue);
+					double[] centerX = table.getNumberArray("centerX", defaultValue);
 					try{
-						if(centerX[0] > 0)
+						if(centerX[0] > 0){
 							SmartDashboard.putString("grip out: ", "I found a contour!");
+							System.out.println("found contour");
+						}
 					} catch (Exception e){
 						SmartDashboard.putString("grip out: ", "I didn't find a contour...");
+						System.out.println("no contour");
 					}
 					Timer.delay(delay);
 				}
@@ -56,7 +59,7 @@ public class CameraMotors {
 	public CameraMotors(Shooter s) {
 		shooter = s;
 		table = NetworkTable.getTable("GRIP/myContoursReport");
-		aim = new AimThread(0.02);
+		aim = new AimThread(0.05);
 		aim.disable();
 		aim.start();
 	}
@@ -69,6 +72,7 @@ public class CameraMotors {
 	public void disableAutoAim() {
 		aim.disable();
 		SmartDashboard.putBoolean("Camera Tracking: ", false);
+		//System.out.println("Ignored call to disable auto aim");
 	}
 
 	public String arrOutput(double[] a) { // array output
@@ -96,8 +100,8 @@ public class CameraMotors {
 //right neg
 	public void aimCamera() {
 		double[] defaultValue = { -1 };
-		double[] centerX = table.getNumberArray("centerXnew", defaultValue);
-		double[] centerY = table.getNumberArray("centerYnew", defaultValue);
+		double[] centerX = table.getNumberArray("centerX", defaultValue);
+		double[] centerY = table.getNumberArray("centerY", defaultValue);
 		try {
 			if (centerX[0] > 0) {
 				System.out.println("WE FOUND A CONTOUR FAM\n");

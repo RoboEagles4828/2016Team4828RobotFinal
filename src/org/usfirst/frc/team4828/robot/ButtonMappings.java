@@ -29,7 +29,6 @@ public class ButtonMappings {
 	public static final int loaderUp = 10;
 	public static final int loaderDown = 9;
 	
-	
 	//climb stick is a special snowflake
 	public static final int climberRightUp = 5;
 	public static final int climberLeftUp = 6;

@@ -6,8 +6,8 @@ import edu.wpi.first.wpilibj.Victor;
 public class Climber {
 	public CANTalon rightClimb;
 	public Victor leftStable, rightStable, leftClimb;
-	private static final double climberUpSpeed = .8;
-	private static final double climberDownSpeed = -.4;
+	private static final double climberUpSpeed = 1;
+	private static final double climberDownSpeed = -1;
 
 	public Climber() {
 		leftStable = new Victor(Ports.stableMotorLeft);
@@ -23,7 +23,6 @@ public class Climber {
 
 	public void leftClimberUp() {
 		leftClimb.set(-climberUpSpeed);
-
 	}
 
 	public void leftClimberDown() {
@@ -37,12 +36,10 @@ public class Climber {
 	
 	public void rightClimberUp() {
 		rightClimb.set(climberUpSpeed);
-
 	}
 
 	public void rightClimberDown() {
 		rightClimb.set(climberDownSpeed);
-
 	}
 
 	public void rightClimberStop() {
@@ -50,12 +47,10 @@ public class Climber {
 	}
 	public void rightStableUp() {
 		rightStable.set(climberUpSpeed);
-
 	}
 
 	public void rightStableDown() {
 		rightStable.set(climberDownSpeed);
-
 	}
 
 	public void rightStableStop() {

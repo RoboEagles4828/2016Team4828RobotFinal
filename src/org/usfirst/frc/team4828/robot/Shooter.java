@@ -107,7 +107,7 @@ public class Shooter {
 	}
 
 	public void reset() {
-		while (upDownMotor.getEncPosition() > -298000) {
+		while (upDownMotor.getEncPosition() > -300000) {
 			flipDown();
 		}
 		lockPosition();
@@ -115,7 +115,7 @@ public class Shooter {
 	}
 
 	public void reset(Robot r) {
-		while (upDownMotor.getEncPosition() > -298000 && r.isAutonomous()) {
+		while (upDownMotor.getEncPosition() > -300000 && r.isAutonomous()) {
 			flipDown();
 		}
 		lockPosition();
@@ -269,6 +269,15 @@ public class Shooter {
 		Timer.delay(1.2);
 		pushServo();
 		Timer.delay(0.75);
+		stopShooter();
+		retractServo();
+	}
+	
+	public void dropBall(){
+		startShooter();
+		Timer.delay(0.1);
+		pushServo();
+		Timer.delay(0.7);
 		stopShooter();
 		retractServo();
 	}

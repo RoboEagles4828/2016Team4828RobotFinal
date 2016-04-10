@@ -116,55 +116,58 @@ public class Robot extends IterativeRobot {
 		// AutoPosition position = (AutoPosition) positionChooser.getSelected();
 
 		if (!hasRun) {
-			// try {
-			// new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-			// SmartDashboard.putBoolean("Started GRIP: ", true);
-			// } catch (Exception e) {
-			// e.printStackTrace();
-			// SmartDashboard.putBoolean("Started GRIP: ", false);
-			// System.out.println("Couldn't start GRIP");
-			// }
-			gyro.reset();
+			
+			try {
+				//new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
+				SmartDashboard.putBoolean("Started GRIP: ", true);
+			} catch (Exception e) {
+				e.printStackTrace();
+				SmartDashboard.putBoolean("Started GRIP: ", false);
+				System.out.println("Couldn't start GRIP");
+			}
+			shooter.shoot();
+//			gyro.reset();
+//			// rd.autoHack();
+//			// Timer.delay(2.5);
+//			// rd.stop();
+//			// if(obstacle == AutoObstacle.LOW_BAR){
+//			// rd.move(Direction.BACKWARD, 30, 18, this);
+//			// loader.reset(this);
+//			// Timer.delay(.5);
+//			// shooter.reset(this);
+//			// Timer.delay(.5);
+//			// }
 //			rd.autoHack();
-//			Timer.delay(2.5);
+//			Timer.delay(2.25);
 //			rd.stop();
-			//if(obstacle == AutoObstacle.LOW_BAR){
-				rd.move(Direction.BACKWARD, 30, 18, this);
-				loader.reset(this);
-				Timer.delay(.5);
-				shooter.reset(this);
-				Timer.delay(.5);
-			//}
-			rd.autoHack();
-			Timer.delay(2.5);
-			rd.stop();
-//			if(obstacle == AutoObstacle.LOW_BAR){
-//				//experimental
-//				while(ultraSamplingCounter < 100){ //take 100 readings to start
-//					ultraV = ultraV + ultrasonic.getVoltage();
-//				}
-//				ultraV = ultraV/100; //average the readings
-//				ultraV = ultrasonic.getVoltage() * 1024/1000 *3.28; //convert to feet
-//				System.out.println("feet: " + ultraV);
-//				while(ultraV > 6){ //while 6 feet away
-//					rd.move(Direction.FORWARD, 25);
-//					if (ultraSamplingCounter < 100) {
-//						ultraSamplingCounter++;
-//						ultraV += ultrasonic.getVoltage();
-//					} else {
-//						ultraSamplingCounter = 0;
-//						ultraV = ultraV / 100; //since we took 100 readings
-//						ultraV = ultraV * 1024 / 1000 * 3.28; //convert to feet
-//						ultraV = 0;
-//					}
-//				}
-//				rd.stop();
-//				rd.rotateToAngle(60, gyro, this);
-//				rd.move(Direction.FORWARD, 30, 30, this);
-//				shooter.shoot();
-//			}
-			
-			
+			// if(obstacle == AutoObstacle.LOW_BAR){
+			// //experimental
+			// while(ultraSamplingCounter < 100 && r.isAutonomous()){ //take 100
+			// readings to start
+			// ultraV = ultraV + ultrasonic.getVoltage();
+			// }
+			// ultraV = ultraV/100; //average the readings
+			// ultraV = ultrasonic.getVoltage() * 1024/1000 *3.28; //convert to
+			// feet
+			// System.out.println("feet: " + ultraV);
+			// while(ultraV > 6){ //while 6 feet away
+			// rd.move(Direction.FORWARD, 25);
+			// if (ultraSamplingCounter < 100) {
+			// ultraSamplingCounter++;
+			// ultraV += ultrasonic.getVoltage();
+			// } else {
+			// ultraSamplingCounter = 0;
+			// ultraV = ultraV / 100; //since we took 100 readings
+			// ultraV = ultraV * 1024 / 1000 * 3.28; //convert to feet
+			// ultraV = 0;
+			// }
+			// }
+			// rd.stop();
+			// rd.rotateToAngle(60, gyro, this);
+			// rd.move(Direction.FORWARD, 30, 30, this);
+			// shooter.shoot();
+			// }
+
 			System.out.println("Finished Autonomous!");
 			hasRun = true;
 		}
@@ -276,7 +279,7 @@ public class Robot extends IterativeRobot {
 		// }
 		hasRun = true;
 		// }
-		
+
 	}
 
 	public void teleopInit() {
@@ -353,11 +356,11 @@ public class Robot extends IterativeRobot {
 		// shooter.lockPosition();
 		// }
 
-		if (driveStick.getRawButton(ButtonMappings.shooterRotateLeft)
-				|| driveStick2.getRawButton(ButtonMappings.shooterRotateLeft))
+		if (driveStick.getRawButton(ButtonMappings.shooterRotateLeft))
+			// || driveStick2.getRawButton(ButtonMappings.shooterRotateLeft))
 			shooter.rotateLeft();
-		else if (driveStick.getRawButton(ButtonMappings.shooterRotateRight)
-				|| driveStick2.getRawButton(ButtonMappings.shooterRotateRight))
+		else if (driveStick.getRawButton(ButtonMappings.shooterRotateRight))
+			// || driveStick2.getRawButton(ButtonMappings.shooterRotateRight))
 			shooter.rotateRight();
 		else
 			shooter.rotateStop();
@@ -371,11 +374,11 @@ public class Robot extends IterativeRobot {
 			checkShooter = true;
 			shooter.flipDown();
 		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
-			//checkShooter = true;
-			//shooter.flipUpSlow();
+			// checkShooter = true;
+			// shooter.flipUpSlow();
 		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
-			//checkShooter = true;
-			//shooter.flipDownSlow();
+			// checkShooter = true;
+			// shooter.flipDownSlow();
 		} else {
 			if (checkShooter) {
 				checkShooter = false;
@@ -394,10 +397,10 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
-			shooter.setPosition(-66000); //-66000 HIGH
+			shooter.setPosition(-66000); // -66000 HIGH
 		}
-		
-		if(driveStick2.getRawButton(ButtonMappings.shooterLoadSet)){
+
+		if (driveStick2.getRawButton(ButtonMappings.shooterLoadSet)) {
 			shooter.setPosition(-288000);
 		}
 
@@ -407,6 +410,7 @@ public class Robot extends IterativeRobot {
 
 		if (driveStick.getRawButton(ButtonMappings.shooterShoot)) {
 			loader.rollStop();
+			rd.stop();
 			shooter.shoot(); // locks robot into the shooting sequence
 		}
 
@@ -427,16 +431,16 @@ public class Robot extends IterativeRobot {
 				checkShooter = true;
 			}
 		}
-		
-		if(climbStick.getRawButton(ButtonMappings.loaderSet)){
+
+		if (climbStick.getRawButton(ButtonMappings.loaderSet)) {
 			loader.setPosition(-2900);
 		}
 
 		rd.arcadeDriveRamp(driveStick);
-		//rd.tankDrive(driveStick, climbStick);
-		
-		if (climbStick.getRawButton(ButtonMappings.climberSetup)) {
-			//climber.setup();
+		// rd.tankDrive(driveStick, climbStick);
+
+		if (climbStick.getTrigger()) {
+			shooter.dropBall();
 		}
 		if (climbStick.getRawButton(ButtonMappings.climberLeftUp)) {
 			climber.leftClimberUp();
