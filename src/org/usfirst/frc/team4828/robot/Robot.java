@@ -112,24 +112,24 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
+		//AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
 		// AutoPosition position = (AutoPosition) positionChooser.getSelected();
 
 		if (!hasRun) {
 			
-			try {
+			/*try {
 				//new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
 				SmartDashboard.putBoolean("Started GRIP: ", true);
 			} catch (Exception e) {
 				e.printStackTrace();
 				SmartDashboard.putBoolean("Started GRIP: ", false);
 				System.out.println("Couldn't start GRIP");
-			}
-			shooter.shoot();
+			}*/
+			//shooter.shoot();
 //			gyro.reset();
-//			// rd.autoHack();
-//			// Timer.delay(2.5);
-//			// rd.stop();
+			rd.autoHack();
+			Timer.delay(2.7);
+			rd.stop();
 //			// if(obstacle == AutoObstacle.LOW_BAR){
 //			// rd.move(Direction.BACKWARD, 30, 18, this);
 //			// loader.reset(this);
@@ -289,7 +289,7 @@ public class Robot extends IterativeRobot {
 	private boolean checkLoader = false; // needed for PID; don't touch
 	private boolean checkShooter = false; // needed for PID; don't touch
 	private boolean checkCamera = false;
-
+	
 	private double ultraV = 0;
 	private int ultraSamplingCounter = 0;
 

@@ -220,8 +220,18 @@ public class Shooter {
 	 * Turns on the shooter wheels.
 	 */
 	public void startShooter() {
-		double shootSpeed = SHOOTER_RAMP_BASE;
-		while(shootSpeed < 1){
+		double currentSpeed = SHOOTER_RAMP_BASE;
+		while(currentSpeed < 1){
+			currentSpeed += SHOOTER_RAMP_RATE;
+			shooterMotor1.set(currentSpeed);
+			shooterMotor2.set(-currentSpeed);
+			Timer.delay(0.02);
+		}
+	}
+	
+	public void startShooter(double shootSpeed, Robot r){
+		double currentSpeed = SHOOTER_RAMP_BASE;
+		while(currentSpeed < shootSpeed && r.isAutonomous()){
 			shootSpeed += SHOOTER_RAMP_RATE;
 			shooterMotor1.set(shootSpeed);
 			shooterMotor2.set(-shootSpeed);
