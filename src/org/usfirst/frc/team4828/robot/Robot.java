@@ -286,6 +286,9 @@ public class Robot extends IterativeRobot {
 		camera.disableAutoAim();
 	}
 
+	double accelerometerOutputCounter = 0;
+	double accX = 0, accY = 0, accZ = 0;
+
 	private boolean checkLoader = false; // needed for PID; don't touch
 	private boolean checkShooter = false; // needed for PID; don't touch
 	private boolean checkCamera = false;
@@ -476,10 +479,7 @@ public class Robot extends IterativeRobot {
 
 		Timer.delay(0.01);
 	}
-
-	double accelerometerOutputCounter = 0;
-	double accX = 0, accY = 0, accZ = 0;
-
+	
 	public void testInit() {
 		System.out.print("Hello! Hello! Hello!\nYou're in test mode by the way!\n");
 		rd.rotateToAngle(240, gyro, this);
