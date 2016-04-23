@@ -8,11 +8,9 @@ import edu.wpi.first.wpilibj.Timer;
 public class Shooter {
 	private CANTalon shooterMotor1;// left wheel of shooter wheel
 	private CANTalon shooterMotor2;
-	private CANTalon upDownMotor;// up-down from loading position to shooting
-									// position
+	private CANTalon upDownMotor;// up-down from loading position to shooting position
 	private CANTalon leftRightMotor;// left-right shooter of the shooter to aim.
-	private Servo pusherServo, pusherServo2;// pushes the ball to be shot by the
-											// left and right wheel
+	private Servo pusherServo, pusherServo2;// pushes the ball to be shot by the left and right wheel
 	private DigitalInput hall_effect; // used for centering
 
 	private static final int midEncPos = -97000; //Formerly used to know when to switch speeds when flipping.
@@ -25,13 +23,12 @@ public class Shooter {
 	private static final double flipUpSpeedInv = 0.2;
 	private static final double flipDownSpeed = -0.2;
 	private static final double flipDownSpeedInv = -0.4;
-
 	public static final double flipUpSpeedSlow = 0.2;
 	public static final double flipDownSpeedSlow = -0.1;
-
 	private static final double leftRightMotorSpeed = 0.15;
 	private static final double intakeSpeed = 0.6;
-	private static final double shootSpeed = 1;
+	private static final double servoPushed = .4;
+	private static final double servoRetracted = .86;
 
 	// private final DigitalInput limitShooterDown = new
 	// DigitalInput(Ports.shooterLimitShooterDown);
@@ -106,6 +103,7 @@ public class Shooter {
 		return !hall_effect.get();
 	}
 
+	//Puts the shooter at a good height to go under low bar
 	public void reset() {
 		while (upDownMotor.getEncPosition() > -300000) {
 			flipDown();
@@ -113,7 +111,8 @@ public class Shooter {
 		lockPosition();
 		System.out.println("passed up down enc pos -275000");
 	}
-
+	
+	//Auton versoin of reset
 	public void reset(Robot r) {
 		while (upDownMotor.getEncPosition() > -300000 && r.isAutonomous()) {
 			flipDown();
@@ -199,16 +198,14 @@ public class Shooter {
 		upDownMotor.set(0);
 	}
 
-	/**
-	 * Causes the shooter wheels to turn inwards; allowing for ball intake.
-	 */
+
+	//Causes the shooter wheels to turn inwards; allowing for ball intake.
 	public void shooterIntake() {
 		shooterMotor1.set(-intakeSpeed);
 		shooterMotor2.set(intakeSpeed);
 	}
-	/**
-	 * Turns off the shooter wheels.
-	 */
+	
+	//Turns off shooter wheels
 	public void stopShooter() {
 		shooterMotor1.set(0);
 		shooterMotor2.set(0);
@@ -216,9 +213,8 @@ public class Shooter {
 
 	private final static double SHOOTER_RAMP_BASE = .2;
 	private final static double SHOOTER_RAMP_RATE = 0.04;
-	/**
-	 * Turns on the shooter wheels.
-	 */
+	
+	//Ramps up the shooter wheels to firing speed. Auton version
 	public void startShooter() {
 		double currentSpeed = SHOOTER_RAMP_BASE;
 		while(currentSpeed < 1){
@@ -229,6 +225,7 @@ public class Shooter {
 		}
 	}
 	
+	//Ramps up the shooter wheels to firing speed. Auton version
 	public void startShooter(double shootSpeed, Robot r){
 		double currentSpeed = SHOOTER_RAMP_BASE;
 		while(currentSpeed < shootSpeed && r.isAutonomous()){
@@ -243,16 +240,15 @@ public class Shooter {
 	 * Activates the servos, which pushes the boulder into the shooter's wheels and fires a shot.
 	 */
 	public void pushServo() {
-		pusherServo.set(.4);// .55
-		pusherServo2.set(.4); // .55
+		pusherServo.set(servoPushed);
+		pusherServo2.set(servoPushed);
 	}
 
-	/**
-	 * Retracts the servos to their original position; ready for ball intake.
-	 */
+	
+	//Retracts the servos to their original position; ready for ball intake. 
 	public void retractServo() {
-		pusherServo.set(.86); // 1
-		pusherServo2.set(.86); // 1
+		pusherServo.set(servoRetracted);
+		pusherServo2.set(servoRetracted);
 	}
 
 	/**
@@ -269,7 +265,8 @@ public class Shooter {
 	 * Locks the robot into the shooting sequence, this involves: Locking the
 	 * shooter position, activating shooter intake for 0.4 seconds, starting the
 	 * shooter wheels for 1.6 seconds, pushing the shooter servos to move the
-	 * ball, stop the shooter and retract servos after .75 seconds.
+	 * ball, stop the shooter and retract servos after .75 seconds. No other 
+	 * actions can be executed during this sequence.
 	 */
 	public void shoot() {
 		this.lockPosition();
@@ -283,6 +280,7 @@ public class Shooter {
 		retractServo();
 	}
 	
+	//Pushes the ball out slowly
 	public void dropBall(){
 		startShooter();
 		Timer.delay(0.1);
@@ -292,6 +290,7 @@ public class Shooter {
 		retractServo();
 	}
 
+	//Lowers the shooter to make it under low bar
 	public void autoHack(Robot r) {
 		while (getUpDownEncPosition() > -42500 && getUpDownEncPosition() < -45500 && r.isAutonomous()) {
 			if (getUpDownEncPosition() > -42500) {

@@ -66,7 +66,7 @@ public class Loader {
 		System.out.println("loader up down reset hit limit");
 	}
 
-	//auto version
+	//auton version
 	public void reset(Robot r) {
 		while (upDownMotor.getEncPosition() > -3000 && r.isAutonomous()) {
 			flipDown();
