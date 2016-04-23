@@ -1,9 +1,6 @@
 package org.usfirst.frc.team4828.robot;
 
-import java.io.IOException;
-
 import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -14,9 +11,8 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-//when deploying grip, put this as JVM arguments: -Xmx50m -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError
-//it stops error about main class = null
 public class Robot extends IterativeRobot {
+	// Declares main robot components
 	private WorldChampionDrive rd;
 	private Joystick driveStick2, driveStick, climbStick;
 	private CameraMotors camera;
@@ -31,18 +27,16 @@ public class Robot extends IterativeRobot {
 
 	private SendableChooser positionChooser;
 	private SendableChooser obstacleChooser;
-	private static final double AUTOAIM_DELAY = 7;
 
-	public void robotInit() {// inits the robot
+	public void robotInit() {
+		// Initializes main robot components
 		driveStick2 = new Joystick(Ports.driveStick2);
 		driveStick = new Joystick(Ports.driveStick);
 		climbStick = new Joystick(Ports.climbStick);
-		rd = new WorldChampionDrive(Ports.driveFrontLeft, Ports.driveRearLeft, Ports.driveFrontRight,
-				Ports.driveRearRight);
+		rd = new WorldChampionDrive(Ports.driveFrontLeft, Ports.driveRearLeft, Ports.driveFrontRight, Ports.driveRearRight);
 		gyro = new AnalogGyro(Ports.gyro);
 		SmartDashboard.putBoolean("Camera Tracking: ", false);
-		shooter = new Shooter(Ports.shooterMotor1, Ports.shooterMotor2, Ports.shooterUpDownMotor,
-				Ports.shooterLeftRightMotor, Ports.shooterServo1, Ports.shooterServo2, Ports.shooterHallEffect);
+		shooter = new Shooter(Ports.shooterMotor1, Ports.shooterMotor2, Ports.shooterUpDownMotor, Ports.shooterLeftRightMotor, Ports.shooterServo1, Ports.shooterServo2, Ports.shooterHallEffect);
 		camera = new CameraMotors(shooter);
 		loader = new Loader(Ports.loaderUpDownMotor, Ports.loaderIntakeMotor);
 		climber = new Climber();
@@ -89,9 +83,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	private enum AutoObstacle {
-		PORTCULLIS("Portcullis"), CHEVAL_DE_FRISE("Cheval De Frise"), MOAT("Moat"), RAMPARTS("Ramparts"), DRAWBRIDGE(
-				"Drawbridge"), SALLYPORT("Sallyport"), ROCK_WALL("Rock Wall"), ROUGH_TERRAIN("Rough Terrain"), LOW_BAR(
-						"Low Bar");
+		PORTCULLIS("Portcullis"), CHEVAL_DE_FRISE("Cheval De Frise"), MOAT("Moat"), RAMPARTS("Ramparts"), DRAWBRIDGE("Drawbridge"), SALLYPORT("Sallyport"), ROCK_WALL("Rock Wall"), ROUGH_TERRAIN("Rough Terrain"), LOW_BAR("Low Bar");
 		private final String stringVal;
 
 		AutoObstacle(String v) {
@@ -105,6 +97,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	private boolean hasRun = false;
+	private boolean lowBar = false;
 
 	public void autonomousInit() {
 		hasRun = false;
@@ -112,173 +105,24 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		//AutoObstacle obstacle = (AutoObstacle) obstacleChooser.getSelected();
-		// AutoPosition position = (AutoPosition) positionChooser.getSelected();
-
 		if (!hasRun) {
-			
-			/*try {
-				//new ProcessBuilder("/home/lvuser/grip").inheritIO().start();
-				SmartDashboard.putBoolean("Started GRIP: ", true);
-			} catch (Exception e) {
-				e.printStackTrace();
-				SmartDashboard.putBoolean("Started GRIP: ", false);
-				System.out.println("Couldn't start GRIP");
-			}*/
-			//shooter.shoot();
-//			gyro.reset();
-			rd.autoHack();
-			Timer.delay(2.7);
-			rd.stop();
-//			// if(obstacle == AutoObstacle.LOW_BAR){
-//			// rd.move(Direction.BACKWARD, 30, 18, this);
-//			// loader.reset(this);
-//			// Timer.delay(.5);
-//			// shooter.reset(this);
-//			// Timer.delay(.5);
-//			// }
-//			rd.autoHack();
-//			Timer.delay(2.25);
-//			rd.stop();
-			// if(obstacle == AutoObstacle.LOW_BAR){
-			// //experimental
-			// while(ultraSamplingCounter < 100 && r.isAutonomous()){ //take 100
-			// readings to start
-			// ultraV = ultraV + ultrasonic.getVoltage();
-			// }
-			// ultraV = ultraV/100; //average the readings
-			// ultraV = ultrasonic.getVoltage() * 1024/1000 *3.28; //convert to
-			// feet
-			// System.out.println("feet: " + ultraV);
-			// while(ultraV > 6){ //while 6 feet away
-			// rd.move(Direction.FORWARD, 25);
-			// if (ultraSamplingCounter < 100) {
-			// ultraSamplingCounter++;
-			// ultraV += ultrasonic.getVoltage();
-			// } else {
-			// ultraSamplingCounter = 0;
-			// ultraV = ultraV / 100; //since we took 100 readings
-			// ultraV = ultraV * 1024 / 1000 * 3.28; //convert to feet
-			// ultraV = 0;
-			// }
-			// }
-			// rd.stop();
-			// rd.rotateToAngle(60, gyro, this);
-			// rd.move(Direction.FORWARD, 30, 30, this);
-			// shooter.shoot();
-			// }
-
+			if (lowBar) {
+				rd.move(Direction.BACKWARD, 30, 18, this);
+				loader.reset(this);
+				Timer.delay(.5);
+				shooter.reset(this);
+				Timer.delay(.5);
+				rd.autoHack();
+				Timer.delay(2.25);
+				rd.stop();
+			} else {
+				rd.autoHack();
+				Timer.delay(2.7);
+				rd.stop();
+			}
 			System.out.println("Finished Autonomous!");
 			hasRun = true;
 		}
-
-		//
-		// switch (position) {
-		// case ONE:
-		// // setup robot with back edge of robot on auto line
-		// rd.move(Direction.BACKWARD, .65, 18, this);
-		// System.out.println("drove 18");
-		// loader.reset(this);
-		// System.out.println("reset loader");
-		// shooter.reset(this);
-		// rd.move(Direction.BACKWARD, .65, 18, this);
-		// System.out.println("drove 18 again");
-		// rd.move(Direction.BACKWARD, .65, 98, this);
-		// System.out.println("drove 98");
-		// Timer.delay(0.3);
-		// rd.rotateToAngle(0, gyro, this);
-		// Timer.delay(0.3);
-		// System.out.println("reset gyro");
-		// rd.move(Direction.BACKWARD, .65, 81.85, this);
-		// System.out.println("drove 81.85");
-		// rd.rotateToAngle(60, gyro, this);
-		// System.out.println("rotate to 60");
-		// rd.move(Direction.BACKWARD, .3, 48, this);
-		// if (isAutonomous())
-		// loader.reset();
-		// shooter.autoHack(this);
-		// camera.enableAutoAim();
-		// if (isAutonomous()) {
-		// System.out.println("delaying for cam to aim");
-		// Timer.delay(AUTOAIM_DELAY);
-		// shooter.shoot();
-		// }
-		// break;
-		// case TWO:
-		// rd.move(Direction.BACKWARD, .65, 36, this);
-		// rd.move(Direction.BACKWARD, .65, 104, this);
-		// Timer.delay(0.3);
-		// rd.rotateToAngle(0, gyro, this);
-		// Timer.delay(0.3);
-		// rd.move(Direction.BACKWARD, .65, 80.71, this);
-		// rd.rotateToAngle(60, gyro, this);
-		// loader.reset(this);
-		// shooter.autoHack(this);
-		// camera.enableAutoAim();
-		// if (this.isAutonomous()) {
-		// Timer.delay(AUTOAIM_DELAY);
-		// shooter.shoot();
-		// }
-		// break;
-		// case THREE:
-		// // setup robot with back edge of robot on auto line
-		// rd.move(Direction.BACKWARD, .65, 36, this);
-		// rd.move(Direction.BACKWARD, .65, 104, this);
-		// Timer.delay(0.3);
-		// rd.rotateToAngle(0, gyro, this); // reorient
-		// Timer.delay(0.3);
-		// rd.move(Direction.BACKWARD, .65, 45.75, this);
-		// rd.rotateToAngle(90, gyro, this);
-		// rd.move(Direction.BACKWARD, .3, 40, this);
-		// rd.rotateToAngle(0, gyro, this); // point back end at goal
-		// loader.reset(this);
-		// shooter.autoHack(this);
-		// camera.enableAutoAim();
-		// if (this.isAutonomous()) {
-		// Timer.delay(AUTOAIM_DELAY);
-		// shooter.shoot();
-		// }
-		// break;
-		// case FOUR:
-		// // setup robot with back edge of robot on auto line
-		// rd.move(Direction.BACKWARD, .65, 36, this);
-		// rd.move(Direction.BACKWARD, .65, 104, this); // defeat obstacle
-		// Timer.delay(0.3);
-		// rd.rotateToAngle(0, gyro, this);
-		// Timer.delay(0.3);
-		// rd.move(Direction.BACKWARD, .65, 29.75, this);
-		// loader.reset(this);
-		// shooter.autoHack(this);
-		// camera.enableAutoAim();
-		// if (this.isAutonomous()) {
-		// Timer.delay(AUTOAIM_DELAY);
-		// shooter.shoot();
-		// }
-		// break;
-		// case FIVE:
-		// // setup robot with back edge of robot on auto line
-		// rd.move(Direction.BACKWARD, .65, 36, this);
-		// rd.rotateToAngle(0, gyro, this); // reorient
-		// rd.move(Direction.BACKWARD, .65, 104, this);
-		// Timer.delay(0.3);
-		// rd.rotateToAngle(0, gyro, this);
-		// Timer.delay(0.3);
-		// rd.move(Direction.BACKWARD, .65, 21.75, this);
-		// rd.rotateToAngle(-90, gyro, this);
-		// rd.move(Direction.FORWARD, .65, 63, this);
-		// rd.rotateToAngle(180, gyro, this);
-		// loader.reset(this);
-		// shooter.autoHack(this);
-		// camera.enableAutoAim();
-		// if (this.isAutonomous()) {
-		// Timer.delay(AUTOAIM_DELAY);
-		// shooter.shoot();
-		// }
-		// break;
-		// }
-		// }
-		hasRun = true;
-		// }
 
 	}
 
@@ -292,7 +136,7 @@ public class Robot extends IterativeRobot {
 	private boolean checkLoader = false; // needed for PID; don't touch
 	private boolean checkShooter = false; // needed for PID; don't touch
 	private boolean checkCamera = false;
-	
+
 	private double ultraV = 0;
 	private int ultraSamplingCounter = 0;
 
@@ -368,12 +212,10 @@ public class Robot extends IterativeRobot {
 		else
 			shooter.rotateStop();
 
-		if ((driveStick.getRawButton(ButtonMappings.shooterFlipUp)
-				|| driveStick2.getRawButton(ButtonMappings.shooterFlipUp))) {
+		if ((driveStick.getRawButton(ButtonMappings.shooterFlipUp) || driveStick2.getRawButton(ButtonMappings.shooterFlipUp))) {
 			checkShooter = true;
 			shooter.flipUp();
-		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDown)
-				|| driveStick2.getRawButton(ButtonMappings.shooterFlipDown)) {
+		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDown) || driveStick2.getRawButton(ButtonMappings.shooterFlipDown)) {
 			checkShooter = true;
 			shooter.flipDown();
 		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
@@ -479,7 +321,7 @@ public class Robot extends IterativeRobot {
 
 		Timer.delay(0.01);
 	}
-	
+
 	public void testInit() {
 		System.out.print("Hello! Hello! Hello!\nYou're in test mode by the way!\n");
 		rd.rotateToAngle(240, gyro, this);
