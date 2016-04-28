@@ -1,5 +1,9 @@
 package org.usfirst.frc.team4828.robot;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.Socket;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -8,50 +12,25 @@ public class CameraMotors {
 	Shooter shooter;
 	NetworkTable table;
 	AimThread aim;
+	public static volatile int centerX = 0;
+	public static volatile int centerY = 0;
 
 	public class AimThread extends Thread {
-		private boolean enabled = false;
-		private boolean alive = true;
-		private double delay = 0.05;
-
-		public AimThread(double delay) {
-			this.delay = delay;
-			enabled = false;
-			alive = true;
-		}
-
-		public void kill() {
-			alive = false;
-		}
-
-		public void disable() {
-			enabled = false;
-		}
-
-		public void enable() {
-			enabled = true;
-		}
+		public static final String HOST = "safevision.local";
+		public static final int PORT = 5800;
 
 		@Override
 		public void run() {
-			while (alive) {
-				// System.out.println("AimThread enabled: " + enabled);
-				if (enabled) {
-					//System.out.println("Thread is running");
-					//aimCamera();
-					double[] defaultValue = { -1 };
-					double[] centerX = table.getNumberArray("centerX", defaultValue);
-					try{
-						if(centerX[0] > 0){
-							SmartDashboard.putString("grip out: ", "I found a contour!");
-							System.out.println("found contour");
-						}
-					} catch (Exception e){
-						SmartDashboard.putString("grip out: ", "I didn't find a contour...");
-						System.out.println("no contour");
-					}
-					Timer.delay(delay);
+			try {
+				Socket soc = new Socket(HOST, PORT);
+				BufferedReader in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+				while (true) {
+					String visionData = in.readLine();
+					centerX = Integer.parseInt(visionData.substring(0, visionData.indexOf(",")));
+					centerY = Integer.parseInt(visionData.substring(visionData.indexOf(",") + 1));
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -59,20 +38,8 @@ public class CameraMotors {
 	public CameraMotors(Shooter s) {
 		shooter = s;
 		table = NetworkTable.getTable("GRIP/myContoursReport");
-		aim = new AimThread(0.05);
-		aim.disable();
+		aim = new AimThread();
 		aim.start();
-	}
-
-	public void enableAutoAim() {
-		aim.enable();
-		SmartDashboard.putBoolean("Camera Tracking: ", true);
-	}
-
-	public void disableAutoAim() {
-		aim.disable();
-		SmartDashboard.putBoolean("Camera Tracking: ", false);
-		//System.out.println("Ignored call to disable auto aim");
 	}
 
 	public String arrOutput(double[] a) { // array output
@@ -97,62 +64,41 @@ public class CameraMotors {
 													// =180
 
 	private boolean isCenteredY = false;
-//right neg
+
 	public void aimCamera() {
-		double[] defaultValue = { -1 };
-		double[] centerX = table.getNumberArray("centerX", defaultValue);
-		double[] centerY = table.getNumberArray("centerY", defaultValue);
-		try {
-			if (centerX[0] > 0) {
-				System.out.println("WE FOUND A CONTOUR FAM\n");
-				int contourUsed = parseContourMap(table.getNumberArray("width", defaultValue));
-				double xval = centerX[contourUsed];
-				double yval = centerY[contourUsed];
-				SmartDashboard.putNumber("GRIP X: ", xval);
-				SmartDashboard.putNumber("GRIP Y: ", yval);
-				SmartDashboard.putNumber("Contour Count: ", centerX.length);
-				if (centerX.length > 0) {
-					if (xval > CAMERA_X_CENTER + DEADZONE / 2) {
-						System.out.println("rotating left");
-						shooter.rotateLeft(.1);
-						//shooter.lockPosition(-250);
-						SmartDashboard.putBoolean("Centered X: ", false);
-					} else if (xval < CAMERA_X_CENTER - DEADZONE / 2) {
-						System.out.println("rotating right");
-						shooter.rotateRight(.1);
-						//shooter.lockPosition(250);
-						SmartDashboard.putBoolean("Centered X: ", false);
-					} else {
-						shooter.rotateStop();
-						SmartDashboard.putBoolean("Centered X: ", true);
-					}
-					if (yval > CAMERA_Y_CENTER + DEADZONE) {
-						System.out.println("flipping up");
-						// shooter.flipUp(-0.02);
-						shooter.changePosition(1000);
-						SmartDashboard.putBoolean("Centered Y: ", false);
-						isCenteredY = false;
-					} else if (yval < CAMERA_Y_CENTER - DEADZONE) {
-						System.out.println("flip down");
-						// shooter.flipDown(-0.41);
-						shooter.changePosition(-4000);
-						SmartDashboard.putBoolean("Centered Y: ", false);
-						isCenteredY = false;
-					} else {
-						if (!isCenteredY) {
-							shooter.flipStop();
-							shooter.lockPosition();
-							isCenteredY = true;
-						}
-						SmartDashboard.putBoolean("Centered Y: ", true);
-					}
-				}
+		if (centerX != 0) {
+			SmartDashboard.putNumber("GRIP X: ", centerX);
+			SmartDashboard.putNumber("GRIP Y: ", centerY);
+			if (centerX > CAMERA_X_CENTER + DEADZONE / 2) {
+				System.out.println("rotating left");
+				shooter.rotateLeft(.1);
+				SmartDashboard.putBoolean("Centered X: ", false);
+			} else if (centerX < CAMERA_X_CENTER - DEADZONE / 2) {
+				System.out.println("rotating right");
+				shooter.rotateRight(.1);
+				SmartDashboard.putBoolean("Centered X: ", false);
+			} else {
+				shooter.rotateStop();
+				SmartDashboard.putBoolean("Centered X: ", true);
 			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			System.out.println("GRIP sees no contours.");
-			shooter.flipStop();
-			shooter.lockPosition();
-			shooter.rotateStop();
+			if (centerY > CAMERA_Y_CENTER + DEADZONE) {
+				System.out.println("flipping up");
+				shooter.changePosition(1000);
+				SmartDashboard.putBoolean("Centered Y: ", false);
+				isCenteredY = false;
+			} else if (centerY < CAMERA_Y_CENTER - DEADZONE) {
+				System.out.println("flip down");
+				shooter.changePosition(-4000);
+				SmartDashboard.putBoolean("Centered Y: ", false);
+				isCenteredY = false;
+			} else {
+				if (!isCenteredY) {
+					shooter.flipStop();
+					shooter.lockPosition();
+					isCenteredY = true;
+				}
+				SmartDashboard.putBoolean("Centered Y: ", true);
+			}
 		}
 	}
 

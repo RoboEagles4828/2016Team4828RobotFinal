@@ -151,12 +151,12 @@ public class Robot extends IterativeRobot {
 //			} else if (spyShot){
 //				shooter.shoot();
 //			}
-			blocker.set(0);
-			Timer.delay(.5);
-			blocker.set(.7);
-			Timer.delay(.5);
+			//blocker.set(0);
+			//Timer.delay(.5);
+			//blocker.set(.7);
+			//Timer.delay(2);
 			rd.autoHack();
-			Timer.delay(2.7);
+			Timer.delay(2.6);
 			rd.stop();
 			shooter.dropBall();
 			System.out.println("Finished Autonomous!");
@@ -166,7 +166,7 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void teleopInit() {
-		camera.disableAutoAim();
+	
 	}
 
 	double accelerometerOutputCounter = 0;
@@ -285,7 +285,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (driveStick2.getRawButton(2)) {
-			blocker.set(.7);
+			//blocker.set(.7);
 		}
 
 		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {
@@ -317,7 +317,7 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (climbStick.getRawButton(2)) {
-			blocker.set(0);
+			//blocker.set(0);
 		}
 
 		rd.arcadeDriveRamp(driveStick);
@@ -369,11 +369,6 @@ public class Robot extends IterativeRobot {
 	
 	private double ultraFeet = 10;
 	public void testPeriodic() {
-		blocker.set(.75);
-		System.out.println(".7");
-		Timer.delay(2);
-		blocker.set(0);
-		System.out.println("0");
-		Timer.delay(2);
+		//blocker.set(.75);
 	}
 }
