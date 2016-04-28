@@ -1,12 +1,15 @@
 package org.usfirst.frc.team4828.robot;
 
 import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
+
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,8 +28,12 @@ public class Robot extends IterativeRobot {
 	private PowerDistributionPanel pdp;
 	private BuiltInAccelerometer accelerometer;
 
+	private Servo blocker;
+	
 	private SendableChooser positionChooser;
 	private SendableChooser obstacleChooser;
+
+	private DigitalInput autoSwitch1 = new DigitalInput(12), autoSwitch2 = new DigitalInput(13);
 
 	public void robotInit() {
 		// Initializes main robot components
@@ -41,6 +48,8 @@ public class Robot extends IterativeRobot {
 		loader = new Loader(Ports.loaderUpDownMotor, Ports.loaderIntakeMotor);
 		climber = new Climber();
 
+		blocker = new Servo(4);
+		
 		ultrasonic = new AnalogInput(Ports.ultrasonic);
 		pdp = new PowerDistributionPanel();
 		accelerometer = new BuiltInAccelerometer();
@@ -98,28 +107,58 @@ public class Robot extends IterativeRobot {
 
 	private boolean hasRun = false;
 	private boolean lowBar = false;
-
+	private boolean spyShot = false;
+	private boolean terrain = false;
+	
 	public void autonomousInit() {
 		hasRun = false;
-
 	}
 
 	public void autonomousPeriodic() {
+		SmartDashboard.putBoolean("Auto DI 1: ", autoSwitch1.get());
+		SmartDashboard.putBoolean("Auto DI 2: ", autoSwitch2.get());
+		boolean auto1 = autoSwitch1.get();
+		boolean auto2 = autoSwitch2.get();
+
 		if (!hasRun) {
-			if (lowBar) {
-				rd.move(Direction.BACKWARD, 30, 18, this);
-				loader.reset(this);
-				Timer.delay(.5);
-				shooter.reset(this);
-				Timer.delay(.5);
-				rd.autoHack();
-				Timer.delay(2.25);
-				rd.stop();
-			} else {
-				rd.autoHack();
-				Timer.delay(2.7);
-				rd.stop();
-			}
+//			if (auto1 == false && auto2 == false) { // 00
+//				SmartDashboard.putString("Auto: ", "00 Low Bar");
+//				lowBar = true;
+//			} else if (auto1 == true && auto2 == false) { // 10
+//				SmartDashboard.putString("Auto: ", "10 Terrain");
+//				terrain = true;
+//			} else if (auto1 == false && auto2 == true) { // 01
+//				SmartDashboard.putString("Auto: ", "01 Spy Shot");
+//				spyShot = true;
+//			} else { // 11
+//				SmartDashboard.putString("Auto: ", "11 Do Nothing");
+//			}
+//			if (!spyShot) {
+//				if (lowBar) {
+//					rd.move(Direction.BACKWARD, 30, 18, this);
+//					loader.reset(this);
+//					Timer.delay(.5);
+//					shooter.reset(this);
+//					Timer.delay(.5);
+//					rd.autoHack();
+//					Timer.delay(2.25);
+//					rd.stop();
+//				} else if (terrain){
+//					rd.autoHack();
+//					Timer.delay(2.7);
+//					rd.stop();
+//				}
+//			} else if (spyShot){
+//				shooter.shoot();
+//			}
+			blocker.set(0);
+			Timer.delay(.5);
+			blocker.set(.7);
+			Timer.delay(.5);
+			rd.autoHack();
+			Timer.delay(2.7);
+			rd.stop();
+			shooter.dropBall();
 			System.out.println("Finished Autonomous!");
 			hasRun = true;
 		}
@@ -141,7 +180,7 @@ public class Robot extends IterativeRobot {
 	private int ultraSamplingCounter = 0;
 
 	public void teleopPeriodic() {
-		if (driveStick.getPOV() == 90) {
+		//if (driveStick.getPOV() == 90) {
 			SmartDashboard.putNumber("RL Enc: ", rd.rearLeft.getEncPosition());
 			SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
 			SmartDashboard.putBoolean("Shooter Hall Effect: ", shooter.getHallEffect());
@@ -177,7 +216,7 @@ public class Robot extends IterativeRobot {
 				accY = 0;
 				accZ = 0;
 			}
-		}
+		//}
 
 		if (driveStick2.getRawButton(ButtonMappings.loaderUp)) {
 			checkLoader = true;
@@ -227,7 +266,7 @@ public class Robot extends IterativeRobot {
 		} else {
 			if (checkShooter) {
 				checkShooter = false;
-				shooter.flipStop();
+				//shooter.flipStop();
 				shooter.lockPosition();
 			}
 		}
@@ -245,8 +284,8 @@ public class Robot extends IterativeRobot {
 			shooter.setPosition(-66000); // -66000 HIGH
 		}
 
-		if (driveStick2.getRawButton(ButtonMappings.shooterLoadSet)) {
-			shooter.setPosition(-288000);
+		if (driveStick2.getRawButton(2)) {
+			blocker.set(.7);
 		}
 
 		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {
@@ -277,8 +316,8 @@ public class Robot extends IterativeRobot {
 			}
 		}
 
-		if (climbStick.getRawButton(ButtonMappings.loaderSet)) {
-			loader.setPosition(-2900);
+		if (climbStick.getRawButton(2)) {
+			blocker.set(0);
 		}
 
 		rd.arcadeDriveRamp(driveStick);
@@ -318,21 +357,23 @@ public class Robot extends IterativeRobot {
 		} else {
 			climber.rightStableStop();
 		}
-
+		
 		Timer.delay(0.01);
 	}
 
 	public void testInit() {
 		System.out.print("Hello! Hello! Hello!\nYou're in test mode by the way!\n");
-		rd.rotateToAngle(240, gyro, this);
+
 	}
 
+	
+	private double ultraFeet = 10;
 	public void testPeriodic() {
-		Timer.delay(.1);
-		if (driveStick.getRawButton(1)) {
-			rd.rotateToAngle(180, gyro, this);
-		} else {
-			rd.rotateToAngle(0, gyro, this);
-		}
+		blocker.set(.75);
+		System.out.println(".7");
+		Timer.delay(2);
+		blocker.set(0);
+		System.out.println("0");
+		Timer.delay(2);
 	}
 }

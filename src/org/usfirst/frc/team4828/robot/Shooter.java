@@ -15,7 +15,7 @@ public class Shooter {
 
 	private static final int midEncPos = -97000; //Formerly used to know when to switch speeds when flipping.
 
-	private static final int encPulseChangePerTick = 8000; //Modifying this changes the speed at which the PID loop attempts to move the shooter. 
+	private static final int encPulseChangePerTick = 4000; //Modifying this changes the speed at which the PID loop attempts to move the shooter. 
 	private static final int encPulseChangePerTickSlow = 6250;
 	
 	//Formerly used as speeds to move the shooter in PercentVBus (voltage) mode
@@ -28,7 +28,7 @@ public class Shooter {
 	private static final double leftRightMotorSpeed = 0.15;
 	private static final double intakeSpeed = 0.6;
 	private static final double servoPushed = .4;
-	private static final double servoRetracted = .86;
+	private static final double servoRetracted = .94; //.86
 
 	// private final DigitalInput limitShooterDown = new
 	// DigitalInput(Ports.shooterLimitShooterDown);
@@ -45,7 +45,7 @@ public class Shooter {
 		pusherServo2 = new Servo(servoPort2);
 		hall_effect = new DigitalInput(hallEffectPort);
 
-		upDownMotor.setPID(0.45, 0, 14, 0, 0, 0, 0);
+		upDownMotor.setPID(0.45, 0, 20, 0, 0, 0, 0);
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 	}
 
@@ -164,6 +164,7 @@ public class Shooter {
 		 * if (upDownMotor.getEncPosition() > midEncPos)
 		 * upDownMotor.set(flipUpSpeedInv); else upDownMotor.set(flipUpSpeed);
 		 */
+		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 		changePosition(encPulseChangePerTick);
 	}
 
@@ -180,6 +181,7 @@ public class Shooter {
 		 * upDownMotor.set(flipDownSpeedInv); else
 		 * upDownMotor.set(flipDownSpeed);
 		 */
+		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 		changePosition(-encPulseChangePerTick);
 	}
 
@@ -194,8 +196,8 @@ public class Shooter {
 	}
 
 	public void flipStop() {
-		upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
-		upDownMotor.set(0);
+		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
+		changePosition(0);
 	}
 
 
