@@ -1,7 +1,5 @@
 package org.usfirst.frc.team4828.robot;
 
-import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.CANTalon;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -17,9 +15,6 @@ public class WorldChampionDrive {
 
 	public boolean inverseControls = false;
 	
-	private final static double LIMITER = .8;
-	//reduces all joystick inputs by the factor of .7; this is essentially a hard cap on what inputs the motors recieve (motors will not go above 75% power)
-
 	public CANTalon frontLeft;
 	public CANTalon rearLeft;
 	public CANTalon frontRight;
@@ -143,8 +138,8 @@ public class WorldChampionDrive {
 		this.arcadeDrive(stick, true);
 	}
 
-	private static final double RAMP_RATE = 0.03;
-	private static final double RANGE = .50;
+	private static final double RAMP_RATE = 0.05;
+	private static final double RANGE = .70;
 	private double ramp(double stickVal, double current){
 		if(stickVal > RANGE){
 			if(current < RANGE)
@@ -193,7 +188,7 @@ public class WorldChampionDrive {
 	private double currentX = 0;
 	public void arcadeDriveRamp(GenericHID stick, boolean squaredInputs) {
 		//currentY = ramp(stick.getY(), currentY);
-		currentY = ramp(stick.getY(), currentY, 0.03, 70);
+		currentY = ramp(stick.getY(), currentY);
 		currentX = ramp(stick.getX(), currentX);
 		arcadeDrive(currentY, currentX, squaredInputs);
 	}

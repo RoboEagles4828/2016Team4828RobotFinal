@@ -29,6 +29,7 @@ public class Robot extends IterativeRobot {
 	private BuiltInAccelerometer accelerometer;
 
 	private Servo blocker;
+	private double throttle = 0;
 	
 	private SendableChooser positionChooser;
 	private SendableChooser obstacleChooser;
@@ -153,14 +154,29 @@ public class Robot extends IterativeRobot {
 //			}
 			//blocker.set(0);
 			//Timer.delay(.5);
-			//blocker.set(.7);
+			//blocker.set(1);
 			//Timer.delay(2);
-			rd.autoHack();
-			Timer.delay(2.6);
-			rd.stop();
-			shooter.dropBall();
-			System.out.println("Finished Autonomous!");
-			hasRun = true;
+			
+			
+			//spyshot
+			shooter.shoot();
+			
+			//terrain
+//			rd.autoHack();
+//			Timer.delay(2.6);
+//			rd.stop();
+//			shooter.dropBall();
+//			System.out.println("Finished Autonomous!");
+//			hasRun = true;
+//			
+//			//This is highgoal
+//			loader.flipDown();
+//			Timer.delay(.5);
+//			shooter.flipDownSlow();
+//			Timer.delay(1);
+//			//This is lowgoal
+//			shooter.shootAuto();
+			hasRun=true;
 		}
 
 	}
@@ -180,7 +196,7 @@ public class Robot extends IterativeRobot {
 	private int ultraSamplingCounter = 0;
 
 	public void teleopPeriodic() {
-		//if (driveStick.getPOV() == 90) {
+		if (driveStick.getPOV() == 90) {
 			SmartDashboard.putNumber("RL Enc: ", rd.rearLeft.getEncPosition());
 			SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
 			SmartDashboard.putBoolean("Shooter Hall Effect: ", shooter.getHallEffect());
@@ -216,7 +232,7 @@ public class Robot extends IterativeRobot {
 				accY = 0;
 				accZ = 0;
 			}
-		//}
+		}
 
 		if (driveStick2.getRawButton(ButtonMappings.loaderUp)) {
 			checkLoader = true;
@@ -284,10 +300,6 @@ public class Robot extends IterativeRobot {
 			shooter.setPosition(-66000); // -66000 HIGH
 		}
 
-		if (driveStick2.getRawButton(2)) {
-			//blocker.set(.7);
-		}
-
 		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {
 			shooter.center();
 		}
@@ -317,7 +329,10 @@ public class Robot extends IterativeRobot {
 		}
 
 		if (climbStick.getRawButton(2)) {
-			//blocker.set(0);
+			blocker.set(0);
+		}
+		else if (driveStick2.getRawButton(2)) {
+			blocker.set(1);
 		}
 
 		rd.arcadeDriveRamp(driveStick);
@@ -359,16 +374,35 @@ public class Robot extends IterativeRobot {
 		}
 		
 		Timer.delay(0.01);
+		
+		//changing the flap thingy with throttle
+		blocker.set(throttle);
+		throttle = ((driveStick2.getThrottle() - 1)/2) * -.8;
+		camera.printDebugCenters();
+		
+		//vision debug
+		camera.printDebugCenters();
+
 	}
 
 	public void testInit() {
 		System.out.print("Hello! Hello! Hello!\nYou're in test mode by the way!\n");
-
 	}
 
-	
 	private double ultraFeet = 10;
 	public void testPeriodic() {
-		//blocker.set(.75);
+
+//		x = x + .05;
+//		System.out.println(x);
+//		Timer.delay(.2);
+//		if(test.getTrigger()){
+//			blocker.set(1);
+//			System.out.println("blocker set 1");
+//		}
+//		else if (test.getRawButton(2)){
+//			blocker.set(0);
+//			System.out.println("blocker set 0");
+//		}
+		//camera.printDebugCenters();
 	}
 }

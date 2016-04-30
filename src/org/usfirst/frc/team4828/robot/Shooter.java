@@ -228,12 +228,12 @@ public class Shooter {
 	}
 	
 	//Ramps up the shooter wheels to firing speed. Auton version
-	public void startShooter(double shootSpeed, Robot r){
+	public void startShooterAuto() {
 		double currentSpeed = SHOOTER_RAMP_BASE;
-		while(currentSpeed < shootSpeed && r.isAutonomous()){
-			shootSpeed += SHOOTER_RAMP_RATE;
-			shooterMotor1.set(shootSpeed);
-			shooterMotor2.set(-shootSpeed);
+		while(currentSpeed < .8){
+			currentSpeed += SHOOTER_RAMP_RATE;
+			shooterMotor1.set(currentSpeed);
+			shooterMotor2.set(-currentSpeed);
 			Timer.delay(0.02);
 		}
 	}
@@ -275,6 +275,18 @@ public class Shooter {
 		shooterIntake();
 		Timer.delay(0.15);
 		startShooter();
+		Timer.delay(1.2);
+		pushServo();
+		Timer.delay(0.75);
+		stopShooter();
+		retractServo();
+	}
+	
+	public void shootAuto() {
+		this.lockPosition();
+		shooterIntake();
+		Timer.delay(0.15);
+		startShooterAuto();
 		Timer.delay(1.2);
 		pushServo();
 		Timer.delay(0.75);
