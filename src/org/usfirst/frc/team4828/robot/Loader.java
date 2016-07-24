@@ -19,7 +19,7 @@ public class Loader {
 		upDownMotor = new CANTalon(port1);
 		intake = new Victor(port2);
 
-		upDownMotor.setPID(.4, 0, 20, 0, 0, 0, 0);
+		upDownMotor.setPID(.4, 0, 30, 0, 0, 0, 0);
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.PercentVbus);
 	}
 

@@ -159,15 +159,15 @@ public class Robot extends IterativeRobot {
 			
 			
 			//spyshot
-			shooter.shoot();
-			
+			//shooter.shootAuto();
 			//terrain
-//			rd.autoHack();
-//			Timer.delay(2.6);
-//			rd.stop();
-//			shooter.dropBall();
-//			System.out.println("Finished Autonomous!");
-//			hasRun = true;
+			rd.autoHack();
+			Timer.delay(2.6);
+			rd.stop();
+			Timer.delay(6);
+			shooter.dropBall();
+			System.out.println("Finished Autonomous!");
+			hasRun = true;
 //			
 //			//This is highgoal
 //			loader.flipDown();

@@ -45,7 +45,7 @@ public class Shooter {
 		pusherServo2 = new Servo(servoPort2);
 		hall_effect = new DigitalInput(hallEffectPort);
 
-		upDownMotor.setPID(0.45, 0, 20, 0, 0, 0, 0);
+		upDownMotor.setPID(0.35, 0, 40, 0, 0, 0, 0);
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 	}
 
@@ -213,8 +213,8 @@ public class Shooter {
 		shooterMotor2.set(0);
 	}
 
-	private final static double SHOOTER_RAMP_BASE = .2;
-	private final static double SHOOTER_RAMP_RATE = 0.04;
+	private final static double SHOOTER_RAMP_BASE = .3;
+	private final static double SHOOTER_RAMP_RATE = 0.08;
 	
 	//Ramps up the shooter wheels to firing speed. Auton version
 	public void startShooter() {
