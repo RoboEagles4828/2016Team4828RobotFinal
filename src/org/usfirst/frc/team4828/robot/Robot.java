@@ -234,10 +234,10 @@ public class Robot extends IterativeRobot {
 			}
 		}
 
-		if (driveStick2.getRawButton(ButtonMappings.loaderUp)) {
+		if (driveStick.getRawButton(ButtonMappings.loaderUp)) {
 			checkLoader = true;
 			loader.flipUp();
-		} else if (driveStick2.getRawButton(ButtonMappings.loaderDown)) {
+		} else if (driveStick.getRawButton(ButtonMappings.loaderDown)) {
 			checkLoader = true;
 			loader.flipDown();
 		} else {
@@ -273,10 +273,10 @@ public class Robot extends IterativeRobot {
 		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDown) || driveStick2.getRawButton(ButtonMappings.shooterFlipDown)) {
 			checkShooter = true;
 			shooter.flipDown();
-		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
+//		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
 			// checkShooter = true;
 			// shooter.flipUpSlow();
-		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
+//		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
 			// checkShooter = true;
 			// shooter.flipDownSlow();
 		} else {
@@ -296,11 +296,11 @@ public class Robot extends IterativeRobot {
 			loader.rollStop();
 		}
 
-		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
-			shooter.setPosition(-66000); // -66000 HIGH
-		}
+//		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
+//			shooter.setPosition(-66000); // -66000 HIGH
+//		}
 
-		if (driveStick2.getRawButton(ButtonMappings.shooterCenter)) {
+		if (driveStick.getRawButton(ButtonMappings.shooterCenter)) {
 			shooter.center();
 		}
 
@@ -313,9 +313,9 @@ public class Robot extends IterativeRobot {
 		if (driveStick.getRawButton(ButtonMappings.inverseControls)) {
 			rd.inverseControls = true;
 		}
-		if (driveStick.getRawButton(ButtonMappings.undoInverseControls)) {
-			rd.inverseControls = false;
-		}
+//		if (driveStick.getRawButton(ButtonMappings.undoInverseControls)) {
+//			rd.inverseControls = false;
+//		}
 
 		// hold to aim camera
 		if (driveStick2.getRawButton(ButtonMappings.aimCamera)) {
@@ -331,7 +331,7 @@ public class Robot extends IterativeRobot {
 		if (climbStick.getRawButton(2)) {
 			blocker.set(0);
 		}
-		else if (driveStick2.getRawButton(2)) {
+		else if (driveStick.getRawButton(2)) {
 			blocker.set(1);
 		}
 

@@ -15,7 +15,7 @@ public class Shooter {
 
 	private static final int midEncPos = -97000; //Formerly used to know when to switch speeds when flipping.
 
-	private static final int encPulseChangePerTick = 4000; //Modifying this changes the speed at which the PID loop attempts to move the shooter. 
+	private static final int encPulseChangePerTick = 5000; //Modifying this changes the speed at which the PID loop attempts to move the shooter. 
 	private static final int encPulseChangePerTickSlow = 6250;
 	
 	//Formerly used as speeds to move the shooter in PercentVBus (voltage) mode
@@ -45,7 +45,7 @@ public class Shooter {
 		pusherServo2 = new Servo(servoPort2);
 		hall_effect = new DigitalInput(hallEffectPort);
 
-		upDownMotor.setPID(0.35, 0, 40, 0, 0, 0, 0);
+		upDownMotor.setPID(0.5, 0, 0, 0, 0, 0, 0);
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 	}
 
