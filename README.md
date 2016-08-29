@@ -2,6 +2,7 @@
 Landroval Code
 
 ## How to use this code in Eclipse
+
 1. Make sure you have Wpilib installed in Eclipse
 2. Go to File > Import...
 3. Open the Git folder and click Projects from Git
@@ -17,6 +18,7 @@ And there you go! You now have working code that you can change as you wish.
 
 ## Creating branches in eclipse to edit on
 When editing code at home, make sure to create a new branch so that the master code is not fatally changed. Your branch should branch off of the develop branch.
+
 1. Go to Github and click on the Branch dropdown in the top left
 2. Click the develop branch. You are now in the develop branch.
 3. Click the branch dropdown again. Type in the name of the branch you want to make and click enter. Usually the name is whatever feature you are implementing.
