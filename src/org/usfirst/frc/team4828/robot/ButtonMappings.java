@@ -35,10 +35,10 @@ public class ButtonMappings {
 	public static final int climberRightDown = 3;
 	public static final int climberLeftDown = 4;
 	
-	public static final int climberStableLeft = 11;
-	public static final int climberStableRight = 12;
-	public static final int climberStableLeftDown = 7;
-	public static final int climberStableRightDown = 8;
+	public static final int climberStableLeft = 7;
+	public static final int climberStableRight = 8;
+	public static final int climberStableLeftDown = 11;
+	public static final int climberStableRightDown = 12;
 	
 	public static final int climberSetup = 1;
 	public static final int loaderSet = 2;

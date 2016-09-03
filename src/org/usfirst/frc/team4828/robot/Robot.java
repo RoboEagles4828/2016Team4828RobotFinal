@@ -1,7 +1,5 @@
 package org.usfirst.frc.team4828.robot;
 
-import org.usfirst.frc.team4828.robot.WorldChampionDrive.Direction;
-
 import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -11,6 +9,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -24,6 +23,8 @@ public class Robot extends IterativeRobot {
 	private Loader loader;
 	private AnalogInput ultrasonic;
 	private Climber climber;
+	private Vision vision;
+	private NetworkTable nt;
 
 	private PowerDistributionPanel pdp;
 	private BuiltInAccelerometer accelerometer;
@@ -48,6 +49,8 @@ public class Robot extends IterativeRobot {
 		camera = new CameraMotors(shooter);
 		loader = new Loader(Ports.loaderUpDownMotor, Ports.loaderIntakeMotor);
 		climber = new Climber();
+		nt = NetworkTable.getTable("GRIP");
+		vision = new Vision(nt);
 
 		blocker = new Servo(4);
 		
@@ -55,6 +58,8 @@ public class Robot extends IterativeRobot {
 		pdp = new PowerDistributionPanel();
 		accelerometer = new BuiltInAccelerometer();
 
+		vision.startGrip();
+		
 		positionChooser = new SendableChooser();
 		positionChooser.addDefault("1", AutoPosition.ONE);
 		positionChooser.addObject("2", AutoPosition.TWO);
@@ -196,6 +201,7 @@ public class Robot extends IterativeRobot {
 	private int ultraSamplingCounter = 0;
 
 	public void teleopPeriodic() {
+		vision.getValues();
 		if (driveStick.getPOV() == 90) {
 			SmartDashboard.putNumber("RL Enc: ", rd.rearLeft.getEncPosition());
 			SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
@@ -341,7 +347,7 @@ public class Robot extends IterativeRobot {
 		if (climbStick.getTrigger()) {
 			shooter.dropBall();
 		}
-		if (climbStick.getRawButton(ButtonMappings.climberLeftUp)) {
+		if (climbStick.getRawButton(ButtonMappings.climberLeftUp)) {  
 			climber.leftClimberUp();
 		} else if (climbStick.getRawButton(ButtonMappings.climberLeftDown)) {
 			climber.leftClimberDown();
