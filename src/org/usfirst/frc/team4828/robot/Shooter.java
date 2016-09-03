@@ -243,7 +243,7 @@ public class Shooter {
 	 */
 	public void pushServo() {
 		pusherServo.set(servoPushed);
-		pusherServo2.set(servoPushed);
+		pusherServo2.set(servoPushed + 0.2);
 	}
 
 	

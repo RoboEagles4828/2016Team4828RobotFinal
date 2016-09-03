@@ -39,7 +39,7 @@ public class CameraMotors {
 
 	public CameraMotors(Shooter s) {
 		shooter = s;
-		table = NetworkTable.getTable("GRIP/myContoursReport");
+		table = NetworkTable.getTable("GRIP/GRIP");
 		aim = new AimThread();
 		aim.start();
 	}
