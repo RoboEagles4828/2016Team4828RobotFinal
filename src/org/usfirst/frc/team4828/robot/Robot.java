@@ -49,8 +49,8 @@ public class Robot extends IterativeRobot {
 		camera = new CameraMotors(shooter);
 		loader = new Loader(Ports.loaderUpDownMotor, Ports.loaderIntakeMotor);
 		climber = new Climber();
-		nt = NetworkTable.getTable("GRIP");
-		vision = new Vision(nt);
+		// nt = NetworkTable.getTable("GRIP");
+		// vision = new Vision(nt);
 
 		blocker = new Servo(4);
 		
@@ -58,7 +58,7 @@ public class Robot extends IterativeRobot {
 		pdp = new PowerDistributionPanel();
 		accelerometer = new BuiltInAccelerometer();
 
-		vision.startGrip();
+		//vision.startGrip();
 		
 		positionChooser = new SendableChooser();
 		positionChooser.addDefault("1", AutoPosition.ONE);

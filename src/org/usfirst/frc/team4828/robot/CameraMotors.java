@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class CameraMotors {
 	Shooter shooter;
-	NetworkTable table;
 	AimThread aim;
 	public static volatile int centerX = 1;
 	public static volatile int centerY = 1;
@@ -21,25 +20,27 @@ public class CameraMotors {
 
 		@Override
 		public void run() {
-			try {
-				Socket soc = new Socket(HOST, PORT);
-				BufferedReader in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
-				while (true) {
-					String visionData = in.readLine();
-					centerX = Integer.parseInt(visionData.substring(0, visionData.indexOf(",")));
-					centerY = Integer.parseInt(visionData.substring(visionData.indexOf(",") + 1));
-					System.out.println(centerX+" "+centerY);
+			while (true) {
+				try {
+					Socket soc = new Socket(HOST, PORT);
+					BufferedReader in = new BufferedReader(new InputStreamReader(soc.getInputStream()));
+					while (true) {
+						String visionData = in.readLine();
+		//					System.out.println(visionData);
+						centerX = Integer.parseInt(visionData.substring(0, visionData.indexOf(",")));
+						centerY = Integer.parseInt(visionData.substring(visionData.indexOf(",") + 1));
+						System.out.println(centerX+" "+centerY);
+					}
+				} catch (Exception e) {
+					System.out.println("Exception in AimThread run");
+					//e.printStackTrace();
 				}
-			} catch (Exception e) {
-				System.out.println("Exception in AimThread run");
-				//e.printStackTrace();
 			}
 		}
 	}
 
 	public CameraMotors(Shooter s) {
 		shooter = s;
-		table = NetworkTable.getTable("GRIP/GRIP");
 		aim = new AimThread();
 		aim.start();
 	}
@@ -59,14 +60,14 @@ public class CameraMotors {
 		return s;
 	}
 
-	private final static int DEADZONE = 16; // degree of error
+	private final static int DEADZONE = 2; // degree of error
 	// private final static int CAMERA_X_CENTER = 160; // center of camera x
 	// coord
 	// private final static int CAMERA_Y_CENTER = 120; // center of camera y
 	// coord
-	private final static int CAMERA_X_CENTER = 185; // center of camera x coord
+	private final static int CAMERA_X_CENTER = 28; // center of camera x coord
 													// =200
-	private final static int CAMERA_Y_CENTER = 175; // center of camera y coor
+	private final static int CAMERA_Y_CENTER = 24; // center of camera y coor
 													// =180
 
 	private boolean isCenteredY = false;
@@ -155,18 +156,18 @@ public class CameraMotors {
 	 * = 80; } motorV.setAngle(vSet); }
 	 */
 
-	public void gripDebugOutput() {
-		double[] defaultValue = { 0 };
-		double[] widths = table.getNumberArray("width", defaultValue);
-		double[] heights = table.getNumberArray("heights", defaultValue);
-		double[] centerX = table.getNumberArray("centerXnew", defaultValue);
-		double[] centerY = table.getNumberArray("centerYnew", defaultValue);
-		double[] areas = table.getNumberArray("area", defaultValue);
-
-		System.out.println("It's width is " + arrOutput(widths) + ".");
-		System.out.println(" It's height is " + arrOutput(heights) + ".");
-		System.out.println(" It's centerX is " + arrOutput(centerX) + ".");
-		System.out.println(" It's centerY is " + arrOutput(centerY) + ".\n");
-		System.out.println(" It's area is " + arrOutput(areas) + ".\n\n");
-	}
+//	public void gripDebugOutput() {
+//		double[] defaultValue = { 0 };
+//		double[] widths = table.getNumberArray("width", defaultValue);
+//		double[] heights = table.getNumberArray("heights", defaultValue);
+//		double[] centerX = table.getNumberArray("centerXnew", defaultValue);
+//		double[] centerY = table.getNumberArray("centerYnew", defaultValue);
+//		double[] areas = table.getNumberArray("area", defaultValue);
+//
+//		System.out.println("It's width is " + arrOutput(widths) + ".");
+//		System.out.println(" It's height is " + arrOutput(heights) + ".");
+//		System.out.println(" It's centerX is " + arrOutput(centerX) + ".");
+//		System.out.println(" It's centerY is " + arrOutput(centerY) + ".\n");
+//		System.out.println(" It's area is " + arrOutput(areas) + ".\n\n");
+//	}
 }
