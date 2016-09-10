@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Robot extends IterativeRobot {
 	// Declares main robot components
 	private WorldChampionDrive rd;
-	private Joystick driveStick2, driveStick, climbStick;
+	private Joystick driveStick2, driveStick;
 	private CameraMotors camera;
 	private AnalogGyro gyro;
 	private Shooter shooter;
@@ -41,7 +41,6 @@ public class Robot extends IterativeRobot {
 		// Initializes main robot components
 		driveStick2 = new Joystick(Ports.driveStick2);
 		driveStick = new Joystick(Ports.driveStick);
-		climbStick = new Joystick(Ports.climbStick);
 		rd = new WorldChampionDrive(Ports.driveFrontLeft, Ports.driveRearLeft, Ports.driveFrontRight, Ports.driveRearRight);
 		gyro = new AnalogGyro(Ports.gyro);
 		SmartDashboard.putBoolean("Camera Tracking: ", false);
@@ -264,27 +263,19 @@ public class Robot extends IterativeRobot {
 		// shooter.lockPosition();
 		// }
 
-		if (driveStick.getRawButton(ButtonMappings.shooterRotateLeft))
-			// || driveStick2.getRawButton(ButtonMappings.shooterRotateLeft))
+		if (driveStick2.getRawButton(ButtonMappings.shooterRotateLeft))
 			shooter.rotateLeft();
-		else if (driveStick.getRawButton(ButtonMappings.shooterRotateRight))
-			// || driveStick2.getRawButton(ButtonMappings.shooterRotateRight))
+		else if (driveStick2.getRawButton(ButtonMappings.shooterRotateRight))
 			shooter.rotateRight();
 		else
 			shooter.rotateStop();
 
-		if ((driveStick.getRawButton(ButtonMappings.shooterFlipUp) || driveStick2.getRawButton(ButtonMappings.shooterFlipUp))) {
+		if ((driveStick2.getRawButton(ButtonMappings.shooterFlipUp))) {
 			checkShooter = true;
 			shooter.flipUp();
-		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDown) || driveStick2.getRawButton(ButtonMappings.shooterFlipDown)) {
+		} else if (driveStick2.getRawButton(ButtonMappings.shooterFlipDown)) {
 			checkShooter = true;
 			shooter.flipDown();
-		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipUpSlow)) {
-			// checkShooter = true;
-			// shooter.flipUpSlow();
-		} else if (driveStick.getRawButton(ButtonMappings.shooterFlipDownSlow)) {
-			// checkShooter = true;
-			// shooter.flipDownSlow();
 		} else {
 			if (checkShooter) {
 				checkShooter = false;
@@ -294,10 +285,10 @@ public class Robot extends IterativeRobot {
 		}
 
 		// loader/shooter intake wheel control
-		if (driveStick.getRawButton(ButtonMappings.loaderIntakeOn)) {
+		if (driveStick2.getRawButton(ButtonMappings.loaderIntakeOn)) {
 			loader.rollIn();
 			shooter.shooterIntake();
-		} else if (driveStick.getRawButton(ButtonMappings.loaderIntakeOff)) {
+		} else if (driveStick2.getRawButton(ButtonMappings.loaderIntakeOff)) {
 			shooter.stopShooter();
 			loader.rollStop();
 		}
@@ -310,7 +301,7 @@ public class Robot extends IterativeRobot {
 			shooter.center();
 		}
 
-		if (driveStick.getRawButton(ButtonMappings.shooterShoot)) {
+		if (driveStick2.getRawButton(ButtonMappings.shoot)) {
 			loader.rollStop();
 			rd.stop();
 			shooter.shoot(); // locks robot into the shooting sequence
@@ -334,7 +325,7 @@ public class Robot extends IterativeRobot {
 			}
 		}
 
-		if (climbStick.getRawButton(2)) {
+		if (driveStick.getRawButton(2)) {
 			blocker.set(0);
 		}
 		else if (driveStick2.getRawButton(2)) {
@@ -342,38 +333,37 @@ public class Robot extends IterativeRobot {
 		}
 
 		rd.arcadeDriveRamp(driveStick);
-		// rd.tankDrive(driveStick, climbStick);
 
-		if (climbStick.getTrigger()) {
+		if (driveStick.getTrigger()) {
 			shooter.dropBall();
 		}
-		if (climbStick.getRawButton(ButtonMappings.climberLeftUp)) {  
+		if (driveStick.getRawButton(ButtonMappings.climberLeftUp)) {  
 			climber.leftClimberUp();
-		} else if (climbStick.getRawButton(ButtonMappings.climberLeftDown)) {
+		} else if (driveStick.getRawButton(ButtonMappings.climberLeftDown)) {
 			climber.leftClimberDown();
 		} else {
 			climber.leftClimberStop();
 		}
 
-		if (climbStick.getRawButton(ButtonMappings.climberRightUp)) {
+		if (driveStick.getRawButton(ButtonMappings.climberRightUp)) {
 			climber.rightClimberUp();
-		} else if (climbStick.getRawButton(ButtonMappings.climberRightDown)) {
+		} else if (driveStick.getRawButton(ButtonMappings.climberRightDown)) {
 			climber.rightClimberDown();
 		} else {
 			climber.rightClimberStop();
 		}
 
-		if (climbStick.getRawButton(ButtonMappings.climberStableLeft)) {
+		if (driveStick.getRawButton(ButtonMappings.climberStableLeft)) {
 			climber.leftStableUp();
-		} else if (climbStick.getRawButton(ButtonMappings.climberStableLeftDown)) {
+		} else if (driveStick.getRawButton(ButtonMappings.climberStableLeftDown)) {
 			climber.leftStableDown();
 		} else {
 			climber.leftStableStop();
 		}
 
-		if (climbStick.getRawButton(ButtonMappings.climberStableRight)) {
+		if (driveStick.getRawButton(ButtonMappings.climberStableRight)) {
 			climber.rightStableUp();
-		} else if (climbStick.getRawButton(ButtonMappings.climberStableRightDown)) {
+		} else if (driveStick.getRawButton(ButtonMappings.climberStableRightDown)) {
 			climber.rightStableDown();
 		} else {
 			climber.rightStableStop();
