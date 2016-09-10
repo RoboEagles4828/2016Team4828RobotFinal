@@ -45,7 +45,7 @@ public class Shooter {
 		pusherServo2 = new Servo(servoPort2);
 		hall_effect = new DigitalInput(hallEffectPort);
 
-		upDownMotor.setPID(0.35, 0, 30, 0, 0, 0, 0);
+		upDownMotor.setPID(0.2, 0, 30, 0, 0, 0, 0);
 		upDownMotor.changeControlMode(CANTalon.TalonControlMode.Position);
 	}
 

@@ -60,14 +60,14 @@ public class CameraMotors {
 		return s;
 	}
 
-	private final static int DEADZONE = 2; // degree of error
+	private final static int DEADZONE = 3; // degree of error
 	// private final static int CAMERA_X_CENTER = 160; // center of camera x
 	// coord
 	// private final static int CAMERA_Y_CENTER = 120; // center of camera y
 	// coord
 	private final static int CAMERA_X_CENTER = 28; // center of camera x coord
 													// =200
-	private final static int CAMERA_Y_CENTER = 24; // center of camera y coor
+	private final static int CAMERA_Y_CENTER = 22; // center of camera y coor
 													// =180
 
 	private boolean isCenteredY = false;
@@ -77,11 +77,11 @@ public class CameraMotors {
 			if (centerX != 0) {
 				SmartDashboard.putNumber("GRIP X: ", centerX);
 				SmartDashboard.putNumber("GRIP Y: ", centerY);
-				if (centerX > CAMERA_X_CENTER + DEADZONE / 2) {
+				if (centerX < CAMERA_X_CENTER + DEADZONE / 2) {
 					System.out.println("rotating left");
 					shooter.rotateLeft(.1);
 					SmartDashboard.putBoolean("Centered X: ", false);
-				} else if (centerX < CAMERA_X_CENTER - DEADZONE / 2) {
+				} else if (centerX > CAMERA_X_CENTER - DEADZONE / 2) {
 					System.out.println("rotating right");
 					shooter.rotateRight(.1);
 					SmartDashboard.putBoolean("Centered X: ", false);

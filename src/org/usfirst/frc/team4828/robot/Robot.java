@@ -23,7 +23,7 @@ public class Robot extends IterativeRobot {
 	private Loader loader;
 	private AnalogInput ultrasonic;
 	private Climber climber;
-	private Vision vision;
+	//private Vision vision;
 	private NetworkTable nt;
 
 	private PowerDistributionPanel pdp;
@@ -201,7 +201,7 @@ public class Robot extends IterativeRobot {
 	private int ultraSamplingCounter = 0;
 
 	public void teleopPeriodic() {
-		vision.getValues();
+		//vision.getValues();
 		if (driveStick.getPOV() == 90) {
 			SmartDashboard.putNumber("RL Enc: ", rd.rearLeft.getEncPosition());
 			SmartDashboard.putNumber("Gyro: ", gyro.getAngle());
