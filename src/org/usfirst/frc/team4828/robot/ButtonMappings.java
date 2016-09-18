@@ -14,7 +14,6 @@ public class ButtonMappings {
 	//exclusive to first joystick
 	public static final int inverseControls = 4;
 	public static final int undoInverseControls = 6;
-	public static final int shooterMoveToHeight = 2;
 	public static final int climberRightUp = 5;
 	public static final int climberLeftUp = 6;
 	public static final int climberRightDown = 3;
@@ -28,16 +27,17 @@ public class ButtonMappings {
 	//exclusive to second joystick (shoot stick)
 	public static final int shoot = 1;
 	public static final int aimCamera = 2;
+
 	public static final int loaderIntakeOn = 5;
 	public static final int loaderIntakeOff = 3;
-	public static final int loaderUp = 10;
-	public static final int loaderDown = 9;
-//	public static final int shooterFlipUpSlow = 12;
-//	public static final int shooterFlipDownSlow = 11;
+	public static final int loaderUp = 12;
+	public static final int loaderDown = 11;
+	
+	public static final int shooterMoveToHeight = 2;
 	public static final int shooterRotateLeft = 7;
 	public static final int shooterRotateRight = 8;
-	public static final int shooterFlipUp = 12;
-	public static final int shooterFlipDown = 11;
+	public static final int shooterFlipUp = 10;
+	public static final int shooterFlipDown = 9;
 	public static final int shooterCenter = 4;
 
 	

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -34,7 +35,9 @@ public class Robot extends IterativeRobot {
 	
 	private SendableChooser positionChooser;
 	private SendableChooser obstacleChooser;
-
+	
+	//private Sendable throttleValue = 0;
+	
 	private DigitalInput autoSwitch1 = new DigitalInput(12), autoSwitch2 = new DigitalInput(13);
 
 	public void robotInit() {
@@ -293,7 +296,7 @@ public class Robot extends IterativeRobot {
 			loader.rollStop();
 		}
 
-		if (driveStick.getRawButton(ButtonMappings.shooterMoveToHeight)) {
+		if (driveStick2.getRawButton(ButtonMappings.shooterMoveToHeight)) {
 			shooter.setPosition(-66000); // -66000 HIGH
 		}
 
@@ -304,7 +307,7 @@ public class Robot extends IterativeRobot {
 		if (driveStick2.getRawButton(ButtonMappings.shoot)) {
 			loader.rollStop();
 			rd.stop();
-			shooter.shoot(); // locks robot into the shooting sequence
+			shooter.shoot(); // locks robot into the shooting sequencef
 		}
 
 		if (driveStick.getRawButton(ButtonMappings.inverseControls)) {
@@ -373,6 +376,7 @@ public class Robot extends IterativeRobot {
 		
 		//changing the flap thingy with throttle
 		blocker.set(throttle);
+//		SmartDashboard.putData("Throttle Value", throttleValue);
 		throttle = ((driveStick2.getThrottle() - 1)/2) * -.8;
 		camera.printDebugCenters();
 		

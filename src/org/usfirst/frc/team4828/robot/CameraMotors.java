@@ -3,6 +3,8 @@ package org.usfirst.frc.team4828.robot;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.sql.Time;
+import java.time.Duration;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
@@ -11,8 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class CameraMotors {
 	Shooter shooter;
 	AimThread aim;
-	public static volatile int centerX = 1;
-	public static volatile int centerY = 1;
+	public static volatile double centerX = 1;
+	public static volatile double centerY = 1;
 
 	public class AimThread extends Thread {
 		public static final String HOST = "safevision.local";
@@ -32,7 +34,12 @@ public class CameraMotors {
 						System.out.println(centerX+" "+centerY);
 					}
 				} catch (Exception e) {
-					System.out.println("Exception in AimThread run");
+					System.out.println("Exception in AimThread run");	
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e1) {
+							System.out.println("Sleep interrupted");
+						}
 					//e.printStackTrace();
 				}
 			}
@@ -60,58 +67,72 @@ public class CameraMotors {
 		return s;
 	}
 
-	private final static int DEADZONE = 2; // degree of error
+	private final static double DEADZONE = 0.0; // degree of error
 	// private final static int CAMERA_X_CENTER = 160; // center of camera x
 	// coord
 	// private final static int CAMERA_Y_CENTER = 120; // center of camera y
 	// coord
-	private final static int CAMERA_X_CENTER = 22; // center of camera x coord
+	private final static double CAMERA_X_CENTER = 40.0; // center of camera x coord
 													// =200
-	private final static int CAMERA_Y_CENTER = 23; // center of camera y coor
+	private final static double CAMERA_Y_CENTER = 46.0; // center of camera y coord
 													// =180
 
 	private boolean isCenteredY = false;
-
+	private boolean isCenteredX = false;
+	private double runTime = 0.0;
+	
 	public void aimCamera() {
-		try {
-			if (centerX != 0) {
-				SmartDashboard.putNumber("GRIP X: ", centerX);
-				SmartDashboard.putNumber("GRIP Y: ", centerY);
-				if (centerX < CAMERA_X_CENTER + DEADZONE / 2) {
-					System.out.println("rotating left");
-					shooter.rotateLeft(.1);
-					SmartDashboard.putBoolean("Centered X: ", false);
-				} else if (centerX > CAMERA_X_CENTER - DEADZONE / 2) {
-					System.out.println("rotating right");
-					shooter.rotateRight(.1);
-					SmartDashboard.putBoolean("Centered X: ", false);
-				} else {
-					shooter.rotateStop();
-					SmartDashboard.putBoolean("Centered X: ", true);
-				}
-				if (centerY > CAMERA_Y_CENTER + DEADZONE) {
-					System.out.println("flipping up");
-					shooter.changePosition(1000);
-					SmartDashboard.putBoolean("Centered Y: ", false);
-					isCenteredY = false;
-				} else if (centerY < CAMERA_Y_CENTER - DEADZONE) {
-					System.out.println("flip down");
-					shooter.changePosition(-4000);
-					SmartDashboard.putBoolean("Centered Y: ", false);
-					isCenteredY = false;
-				} else {
-					if (!isCenteredY) {
-						shooter.flipStop();
-						shooter.lockPosition();
-						isCenteredY = true;
+		System.out.println("--- Start AutoAim ---");
+		isCenteredX = false;
+		isCenteredY = false;
+		while(!isCenteredX && !isCenteredY) {
+			runTime = Timer.getFPGATimestamp() + 10;
+			try {
+				if (!isCenteredX) {
+					SmartDashboard.putNumber("GRIP X: ", centerX);
+					SmartDashboard.putNumber("GRIP Y: ", centerY);
+					if (centerX < CAMERA_X_CENTER + DEADZONE / 2) {
+						System.out.println("rotating left");
+						shooter.rotateLeft(.1);
+						SmartDashboard.putBoolean("Centered X: ", false);
+					} else if (centerX > CAMERA_X_CENTER - DEADZONE / 2) {
+						System.out.println("rotating right");
+						shooter.rotateRight(.1);
+						SmartDashboard.putBoolean("Centered X: ", false);
+					} else {
+						shooter.rotateStop();
+						isCenteredX = true;
+						SmartDashboard.putBoolean("Centered X: ", true);
 					}
-					SmartDashboard.putBoolean("Centered Y: ", true);
+					if (!isCenteredY) {
+						if (centerY > CAMERA_Y_CENTER + DEADZONE) {
+							System.out.println("flipping up");
+							shooter.changePosition(500);
+							SmartDashboard.putBoolean("Centered Y: ", false);
+							isCenteredY = false;
+						} else if (centerY < CAMERA_Y_CENTER - DEADZONE) {
+							System.out.println("flip down");
+							shooter.changePosition(-750);
+							SmartDashboard.putBoolean("Centered Y: ", false);
+							isCenteredY = false;
+						} else {
+							shooter.flipStop();
+							shooter.lockPosition();
+							isCenteredY = true;
+							SmartDashboard.putBoolean("Centered Y: ", true);
+						}
+					}
 				}
+			} catch (Exception e) {
+				System.out.println("Exception in aimCamera");
+				//e.printStackTrace();
 			}
-		} catch (Exception e) {
-			System.out.println("Exception in aimCamera");
-			//e.printStackTrace();
+			if (Timer.getFPGATimestamp() == runTime) {
+				isCenteredY = true;
+				isCenteredX = true;
+			}
 		}
+		System.out.println("--- End AutoAim ---");
 	}
 
 	public int parseContourMap(double[] map) { // index of longest contour
