@@ -273,6 +273,23 @@ public class Robot extends IterativeRobot {
 		else
 			shooter.rotateStop();
 
+		// For moving shooter with joystick
+		
+		if (driveStick2.getMagnitude() > 0.8) {
+			System.out.println("X: " + driveStick2.getX() + "Y: " + driveStick2.getY());
+			if(driveStick2.getX() > 0.8) shooter.rotateRight();
+			if(driveStick2.getX() < -0.8) shooter.rotateLeft();
+			if(driveStick2.getY() < -0.8) shooter.flipUp();
+			if(driveStick2.getY() > 0.8) shooter.flipDown();
+			else {
+				if (checkShooter) {
+					checkShooter = false;
+					shooter.lockPosition();
+				}
+				shooter.rotateStop();
+			}
+		}
+		
 		if ((driveStick2.getRawButton(ButtonMappings.shooterFlipUp))) {
 			checkShooter = true;
 			shooter.flipUp();
