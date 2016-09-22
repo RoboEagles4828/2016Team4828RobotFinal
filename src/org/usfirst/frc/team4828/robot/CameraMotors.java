@@ -31,7 +31,7 @@ public class CameraMotors {
 		//					System.out.println(visionData);
 						centerX = Integer.parseInt(visionData.substring(0, visionData.indexOf(",")));
 						centerY = Integer.parseInt(visionData.substring(visionData.indexOf(",") + 1));
-						System.out.println(centerX+" "+centerY);
+						//System.out.println(centerX+" "+centerY);
 					}
 				} catch (Exception e) {
 					System.out.println("Exception in AimThread run");	
@@ -85,8 +85,8 @@ public class CameraMotors {
 		System.out.println("--- Start AutoAim ---");
 		isCenteredX = false;
 		isCenteredY = false;
+		runTime = Timer.getFPGATimestamp() + 10;
 		while(!isCenteredX && !isCenteredY) {
-			runTime = Timer.getFPGATimestamp() + 10;
 			try {
 				if (!isCenteredX) {
 					SmartDashboard.putNumber("GRIP X: ", centerX);

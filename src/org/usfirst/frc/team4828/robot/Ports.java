@@ -38,4 +38,7 @@ public class Ports {
 	public static final int stableMotorRight = 1; //PWM
 	public static final int stableMotorLeft = 8; //PWM
 	
+	public static final int blockerMotor = 4;
+	public static final int blockerHallEffect = 6;
+	
 }

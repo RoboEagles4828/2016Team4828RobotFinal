@@ -6,6 +6,8 @@ public class ButtonMappings {
 	}
 	
 	//exclusive to first joystick
+	public static final int blockerUp = 5;
+	public static final int blockerDown = 6;
 	public static final int inverseControls = 2;
 	public static final int undoInverseControls = 6;
 	public static final int climberRightUp = 5;

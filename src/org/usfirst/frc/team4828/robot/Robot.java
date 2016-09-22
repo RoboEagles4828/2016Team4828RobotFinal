@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.networktables.NetworkTable;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,13 +31,15 @@ public class Robot extends IterativeRobot {
 	private PowerDistributionPanel pdp;
 	private BuiltInAccelerometer accelerometer;
 
-	private Servo blocker;
+	private Victor blocker;
 	private double throttle = 0;
 	
 	private SendableChooser positionChooser;
 	private SendableChooser obstacleChooser;
 	
 	//private Sendable throttleValue = 0;
+	
+	private DigitalInput blockHall;
 	
 	private DigitalInput autoSwitch1 = new DigitalInput(12), autoSwitch2 = new DigitalInput(13);
 
@@ -51,10 +54,11 @@ public class Robot extends IterativeRobot {
 		camera = new CameraMotors(shooter);
 		loader = new Loader(Ports.loaderUpDownMotor, Ports.loaderIntakeMotor);
 		climber = new Climber();
+		blockHall = new DigitalInput(Ports.blockerHallEffect);
 		// nt = NetworkTable.getTable("GRIP");
 		// vision = new Vision(nt);
 
-		blocker = new Servo(4);
+		blocker = new Victor(4);
 		
 		ultrasonic = new AnalogInput(Ports.ultrasonic);
 		pdp = new PowerDistributionPanel();
@@ -357,44 +361,40 @@ public class Robot extends IterativeRobot {
 		if (driveStick.getTrigger()) {
 			shooter.dropBall();
 		}
-		if (driveStick.getRawButton(ButtonMappings.climberLeftUp)) {  
-			climber.leftClimberUp();
-		} else if (driveStick.getRawButton(ButtonMappings.climberLeftDown)) {
-			climber.leftClimberDown();
+//		if (driveStick.getRawButton(ButtonMappings.climberLeftUp)) {  
+//			climber.leftClimberUp();
+//		} else if (driveStick.getRawButton(ButtonMappings.climberLeftDown)) {
+//			climber.leftClimberDown();
+//		} else {
+//			climber.leftClimberStop();
+//		}
+
+		if (driveStick.getRawButton(ButtonMappings.blockerUp) && blockHall.get()) {
+			blocker.set(1);
+		} else if (driveStick.getRawButton(ButtonMappings.blockerDown)) {
+			blocker.set(-1);
 		} else {
-			climber.leftClimberStop();
+			blocker.set(0);
 		}
 
-		if (driveStick.getRawButton(ButtonMappings.climberRightUp)) {
-			climber.rightClimberUp();
-		} else if (driveStick.getRawButton(ButtonMappings.climberRightDown)) {
-			climber.rightClimberDown();
-		} else {
-			climber.rightClimberStop();
-		}
+//		if (driveStick.getRawButton(ButtonMappings.climberStableLeft)) {
+//			climber.leftStableUp();
+//		} else if (driveStick.getRawButton(ButtonMappings.climberStableLeftDown)) {
+//			climber.leftStableDown();
+//		} else {
+//			climber.leftStableStop();
+//		}
 
-		if (driveStick.getRawButton(ButtonMappings.climberStableLeft)) {
-			climber.leftStableUp();
-		} else if (driveStick.getRawButton(ButtonMappings.climberStableLeftDown)) {
-			climber.leftStableDown();
-		} else {
-			climber.leftStableStop();
-		}
-
-		if (driveStick.getRawButton(ButtonMappings.climberStableRight)) {
-			climber.rightStableUp();
-		} else if (driveStick.getRawButton(ButtonMappings.climberStableRightDown)) {
-			climber.rightStableDown();
-		} else {
-			climber.rightStableStop();
-		}
+//		if (driveStick.getRawButton(ButtonMappings.climberStableRight)) {
+//			climber.rightStableUp();
+//		} else if (driveStick.getRawButton(ButtonMappings.climberStableRightDown)) {
+//			climber.rightStableDown();
+//		} else {
+//			climber.rightStableStop();
+//		}
 		
 		Timer.delay(0.01);
 		
-		//changing the flap thingy with throttle
-		blocker.set(throttle);
-//		SmartDashboard.putData("Throttle Value", throttleValue);
-		throttle = ((driveStick2.getThrottle() - 1)/2) * -.8;
 		camera.printDebugCenters();
 		
 		//vision debug
@@ -404,22 +404,11 @@ public class Robot extends IterativeRobot {
 
 	public void testInit() {
 		System.out.print("Hello! Hello! Hello!\nYou're in test mode by the way!\n");
+		blockHall = new DigitalInput(Ports.blockerHallEffect);
 	}
 
 	private double ultraFeet = 10;
 	public void testPeriodic() {
-
-//		x = x + .05;
-//		System.out.println(x);
-//		Timer.delay(.2);
-//		if(test.getTrigger()){
-//			blocker.set(1);
-//			System.out.println("blocker set 1");
-//		}
-//		else if (test.getRawButton(2)){
-//			blocker.set(0);
-//			System.out.println("blocker set 0");
-//		}
-		//camera.printDebugCenters();
+		System.out.println(blockHall.get());
 	}
 }
