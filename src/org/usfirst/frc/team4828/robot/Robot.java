@@ -34,8 +34,9 @@ public class Robot extends IterativeRobot {
 	private Victor blocker;
 	private double throttle = 0;
 	
-	private SendableChooser positionChooser;
-	private SendableChooser obstacleChooser;
+	private SendableChooser autoChooser;
+//	private SendableChooser positionChooser;
+//	private SendableChooser obstacleChooser;
 	
 	//private Sendable throttleValue = 0;
 	
@@ -63,59 +64,60 @@ public class Robot extends IterativeRobot {
 		ultrasonic = new AnalogInput(Ports.ultrasonic);
 		pdp = new PowerDistributionPanel();
 		accelerometer = new BuiltInAccelerometer();
+	
 
-		//vision.startGrip();
 		
-		positionChooser = new SendableChooser();
-		positionChooser.addDefault("1", AutoPosition.ONE);
-		positionChooser.addObject("2", AutoPosition.TWO);
-		positionChooser.addObject("3", AutoPosition.THREE);
-		positionChooser.addObject("4", AutoPosition.FOUR);
-		positionChooser.addObject("5", AutoPosition.FIVE);
-
-		obstacleChooser = new SendableChooser();
-		obstacleChooser.addObject("Low Bar", AutoObstacle.LOW_BAR);
-		obstacleChooser.addObject("Portcullis", AutoObstacle.PORTCULLIS);
-		obstacleChooser.addObject("Cheval De Frise", AutoObstacle.CHEVAL_DE_FRISE);
-		obstacleChooser.addObject("Moat", AutoObstacle.MOAT);
-		obstacleChooser.addObject("Ramparts", AutoObstacle.RAMPARTS);
-		obstacleChooser.addObject("Drawbridge", AutoObstacle.DRAWBRIDGE);
-		obstacleChooser.addObject("Sallyport", AutoObstacle.SALLYPORT);
-		obstacleChooser.addDefault("Rock Wall", AutoObstacle.ROCK_WALL);
-		obstacleChooser.addObject("Rough Terrain", AutoObstacle.ROUGH_TERRAIN);
-
-		SmartDashboard.putData("Autonomous Position", positionChooser);
-		SmartDashboard.putData("Autonomous Obstacle", obstacleChooser);
+//		positionChooser = new SendableChooser();
+//		positionChooser.addDefault("1", AutoPosition.ONE);
+//		positionChooser.addObject("2", AutoPosition.TWO);
+//		positionChooser.addObject("3", AutoPosition.THREE);
+//		positionChooser.addObject("4", AutoPosition.FOUR);
+//		positionChooser.addObject("5", AutoPosition.FIVE);
+//
+//		obstacleChooser = new SendableChooser();
+//		obstacleChooser.addObject("Low Bar", AutoObstacle.LOW_BAR);
+//		obstacleChooser.addObject("Portcullis", AutoObstacle.PORTCULLIS);
+//		obstacleChooser.addObject("Cheval De Frise", AutoObstacle.CHEVAL_DE_FRISE);
+//		obstacleChooser.addObject("Moat", AutoObstacle.MOAT);
+//		obstacleChooser.addObject("Ramparts", AutoObstacle.RAMPARTS);
+//		obstacleChooser.addObject("Drawbridge", AutoObstacle.DRAWBRIDGE);
+//		obstacleChooser.addObject("Sallyport", AutoObstacle.SALLYPORT);
+//		obstacleChooser.addDefault("Rock Wall", AutoObstacle.ROCK_WALL);
+//		obstacleChooser.addObject("Rough Terrain", AutoObstacle.ROUGH_TERRAIN);
+//
+//		SmartDashboard.putData("Autonomous Position", positionChooser);
+//		SmartDashboard.putData("Autonomous Obstacle", obstacleChooser);
 
 	}
 
-	private enum AutoPosition {
-		ONE("1"), TWO("2"), THREE("3"), FOUR("4"), FIVE("5");
-		private final String stringVal;
+//	private enum AutoPosition {
+//		ONE("1"), TWO("2"), THREE("3"), FOUR("4"), FIVE("5");
+//		private final String stringVal;
+//
+//		AutoPosition(String v) {
+//			stringVal = v;
+//		}
+//
+//		@Override
+//		public String toString() {
+//			return stringVal;
+//		}
+//	}
+	
 
-		AutoPosition(String v) {
-			stringVal = v;
-		}
-
-		@Override
-		public String toString() {
-			return stringVal;
-		}
-	}
-
-	private enum AutoObstacle {
-		PORTCULLIS("Portcullis"), CHEVAL_DE_FRISE("Cheval De Frise"), MOAT("Moat"), RAMPARTS("Ramparts"), DRAWBRIDGE("Drawbridge"), SALLYPORT("Sallyport"), ROCK_WALL("Rock Wall"), ROUGH_TERRAIN("Rough Terrain"), LOW_BAR("Low Bar");
-		private final String stringVal;
-
-		AutoObstacle(String v) {
-			stringVal = v;
-		}
-
-		@Override
-		public String toString() {
-			return stringVal;
-		}
-	}
+//	private enum AutoObstacle {
+//		PORTCULLIS("Portcullis"), CHEVAL_DE_FRISE("Cheval De Frise"), MOAT("Moat"), RAMPARTS("Ramparts"), DRAWBRIDGE("Drawbridge"), SALLYPORT("Sallyport"), ROCK_WALL("Rock Wall"), ROUGH_TERRAIN("Rough Terrain"), LOW_BAR("Low Bar");
+//		private final String stringVal;
+//
+//		AutoObstacle(String v) {
+//			stringVal = v;
+//		}
+//
+//		@Override
+//		public String toString() {
+//			return stringVal;
+//		}
+//	}
 
 	private boolean hasRun = false;
 	private boolean lowBar = false;
@@ -127,10 +129,10 @@ public class Robot extends IterativeRobot {
 	}
 
 	public void autonomousPeriodic() {
-		SmartDashboard.putBoolean("Auto DI 1: ", autoSwitch1.get());
-		SmartDashboard.putBoolean("Auto DI 2: ", autoSwitch2.get());
-		boolean auto1 = autoSwitch1.get();
-		boolean auto2 = autoSwitch2.get();
+//		SmartDashboard.putBoolean("Auto DI 1: ", autoSwitch1.get());
+//		SmartDashboard.putBoolean("Auto DI 2: ", autoSwitch2.get());
+//		boolean auto1 = autoSwitch1.get();
+//		boolean auto2 = autoSwitch2.get();
 
 		if (!hasRun) {
 //			if (auto1 == false && auto2 == false) { // 00
@@ -172,13 +174,19 @@ public class Robot extends IterativeRobot {
 			//spyshot
 			//shooter.shootAuto();
 			//terrain
-			rd.autoHack();
-			Timer.delay(2.6);
-			rd.stop();
-			Timer.delay(6);
-			shooter.dropBall();
+			boolean autoChoice = false;
+			if (autoChoice) {
+				rd.autoHack();
+				Timer.delay(2.4);
+				rd.stop();
+				//Timer.delay(6);
+				//shooter.dropBall();
+				hasRun = true;
+			} else {
+				shooter.shootAuto();
+				hasRun = true;
+			}
 			System.out.println("Finished Autonomous!");
-			hasRun = true;
 //			
 //			//This is highgoal
 //			loader.flipDown();
@@ -347,13 +355,6 @@ public class Robot extends IterativeRobot {
 				checkCamera = false;
 				checkShooter = true;
 			}
-		}
-
-		if (driveStick.getRawButton(2)) {
-			blocker.set(0);
-		}
-		else if (driveStick2.getRawButton(2)) {
-			blocker.set(1);
 		}
 
 		rd.arcadeDriveRamp(driveStick);

@@ -230,7 +230,7 @@ public class Shooter {
 	//Ramps up the shooter wheels to firing speed. Auton version
 	public void startShooterAuto() {
 		double currentSpeed = SHOOTER_RAMP_BASE;
-		while(currentSpeed < .8){
+		while(currentSpeed < .6){
 			currentSpeed += SHOOTER_RAMP_RATE;
 			shooterMotor1.set(currentSpeed);
 			shooterMotor2.set(-currentSpeed);
