@@ -190,7 +190,7 @@ public class WorldChampionDrive {
 		//currentY = ramp(stick.getY(), currentY);
 		currentY = ramp(stick.getY(), currentY);
 		currentX = ramp(stick.getX(), currentX);
-		arcadeDrive(currentY, currentX, squaredInputs);
+		arcadeDrive(currentY/2, currentX/2, squaredInputs);
 	}
 	
 	public void arcadeDriveRamp(GenericHID stick){

@@ -221,8 +221,8 @@ public class Shooter {
 		double currentSpeed = SHOOTER_RAMP_BASE;
 		while(currentSpeed < 1){
 			currentSpeed += SHOOTER_RAMP_RATE;
-			shooterMotor1.set(currentSpeed);
-			shooterMotor2.set(-currentSpeed);
+			shooterMotor1.set(currentSpeed/2);
+			shooterMotor2.set(-currentSpeed/2);
 			Timer.delay(0.02);
 		}
 	}
